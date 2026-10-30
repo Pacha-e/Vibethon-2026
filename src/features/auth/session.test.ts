@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isEafitEmail, normalizeEmail } from './session';
+import { isEafitEmail, normalizeEmail, roleOf } from './session';
 
 describe('isEafitEmail', () => {
   it('acepta correos @eafit.edu.co, sin importar mayúsculas ni espacios', () => {
@@ -18,5 +18,14 @@ describe('isEafitEmail', () => {
 
   it('normaliza a minúsculas sin espacios', () => {
     expect(normalizeEmail('  Ana@EAFIT.edu.co ')).toBe('ana@eafit.edu.co');
+  });
+});
+
+describe('roleOf', () => {
+  it('asigna las cuentas de operación y deja al resto como conductor', () => {
+    expect(roleOf('porteria@eafit.edu.co')).toBe('gate');
+    expect(roleOf(' VALET@eafit.edu.co')).toBe('valet');
+    expect(roleOf('oficina@eafit.edu.co')).toBe('office');
+    expect(roleOf('ana.perez@eafit.edu.co')).toBe('driver');
   });
 });

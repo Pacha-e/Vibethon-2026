@@ -56,7 +56,7 @@ export function AppNav<T extends string>({
       onKeyDown={onKeyDown}
       className={
         dock
-          ? "grid grid-cols-5 gap-1"
+          ? "grid auto-cols-fr grid-flow-col gap-1"
           : "flex gap-1 rounded-full bg-white/[0.06] p-1 ring-1 ring-inset ring-white/10"
       }
     >

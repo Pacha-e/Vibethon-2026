@@ -17,6 +17,7 @@ import { Panel, ViewHeader } from "../../components/ui/Panel";
 import { Plate } from "../../components/ui/Plate";
 import { SPRING } from "../../components/ui/motion";
 import { useSim } from "../../state/store";
+import { useSession } from "../auth/SessionContext";
 import HireValetPanel from "../valet/HireValetPanel";
 
 const TRIP_STEPS: { stage: Vehicle["stage"]; label: string }[] = [
@@ -62,23 +63,28 @@ function nextStep(v: Vehicle): string | null {
 
 export default function DriverView() {
   const { state, dispatch } = useSim();
+  const { email } = useSession();
   const [plate, setPlate] = useState("");
   const [driver, setDriver] = useState("");
   const [access, setAccess] = useState<AccessId>("LV");
   const [formMsg, setFormMsg] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState("");
 
-  // Vehículos activos. Se conserva el seleccionado aunque ya haya salido, para mostrar su cierre.
+  // Privacidad: el conductor solo ve los vehículos registrados desde su cuenta.
+  // Se conserva el seleccionado aunque ya haya salido, para mostrar su cierre.
   const choices = useMemo<Vehicle[]>(
     () =>
       Object.values(state.vehicles).filter(
-        (v) => v.stage !== "exited" || v.id === selectedId,
+        (v) => v.owner === email && (v.stage !== "exited" || v.id === selectedId),
       ),
-    [state.vehicles, selectedId],
+    [state.vehicles, selectedId, email],
   );
-  const me: Vehicle | null = selectedId
-    ? (state.vehicles[selectedId] ?? null)
-    : null;
+  // Sin selección explícita se sigue el vehículo activo más reciente de la cuenta.
+  const meId =
+    choices.find((v) => v.id === selectedId)?.id ??
+    [...choices].reverse().find((v) => v.stage !== "exited")?.id ??
+    "";
+  const me: Vehicle | null = meId ? state.vehicles[meId] : null;
   const cellId = me?.cellId ?? null;
   const cell = cellId ? state.cells.find((c) => c.id === cellId) : undefined;
   const showEta =
@@ -97,7 +103,7 @@ export default function DriverView() {
     }
     setFormMsg(null);
     const before = state.vehicles;
-    const r = dispatch({ type: "arrive", plate: p, driver: d, access });
+    const r = dispatch({ type: "arrive", plate: p, driver: d, access, owner: email });
     if (!r.ok) return;
     // El vehículo nuevo es el primer evento que referencia un id inexistente antes del comando.
     const newId = r.events.find(
@@ -194,7 +200,7 @@ export default function DriverView() {
             </form>
           </Panel>
 
-          <Panel id="pick-title" title="Mi vehículo">
+          <Panel id="pick-title" title="Mis vehículos" description="Solo los registrados con esta cuenta.">
             <label
               htmlFor="me-select"
               className="block text-sm font-semibold text-fg-strong"
@@ -203,7 +209,7 @@ export default function DriverView() {
             </label>
             <select
               id="me-select"
-              value={selectedId}
+              value={meId}
               onChange={(e) => setSelectedId(e.target.value)}
               className="field mt-2"
             >
@@ -216,7 +222,7 @@ export default function DriverView() {
             </select>
             {choices.length === 0 && (
               <p className="mt-2 text-sm text-fg-muted">
-                Aún no hay vehículos activos. Regístrese en la fila.
+                Aún no ha registrado vehículos con esta cuenta. Regístrese en la fila.
               </p>
             )}
           </Panel>

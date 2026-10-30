@@ -86,7 +86,16 @@ export default function LoginView({ onLogin }: { onLogin: (email: string) => voi
             </button>
           </form>
         </GlassSurface>
-        <p className="mt-4 text-center text-xs text-fg-muted">
+        <div className="mt-4 rounded-tile border border-line bg-surface-card/80 px-4 py-3 text-sm text-fg-body shadow-e1">
+          <p className="font-semibold text-fg-strong">Cuentas de la demo</p>
+          <ul className="mt-1 space-y-0.5">
+            <li>Conductor: cualquier correo @eafit.edu.co (ve solo sus vehículos)</li>
+            <li>Portería: porteria@eafit.edu.co</li>
+            <li>Valet: valet@eafit.edu.co</li>
+            <li>Oficina: oficina@eafit.edu.co</li>
+          </ul>
+        </div>
+        <p className="mt-3 text-center text-xs text-fg-muted">
           Demo local: el correo solo identifica la sesión en este navegador; no se envía a ningún servidor.
         </p>
       </motion.div>

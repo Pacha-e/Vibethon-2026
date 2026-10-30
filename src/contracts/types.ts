@@ -34,6 +34,7 @@ export interface Vehicle {
   valetServiceId: string | null;
   reassignments: number;
   notice: string | null;         // último aviso para el conductor (p.ej. reasignación)
+  owner?: string | null;         // correo de la cuenta que lo registró (solo esa cuenta lo ve como conductor)
 }
 
 // ---------- Valets ----------
@@ -109,7 +110,7 @@ export interface SimState {
 
 // ---------- Comandos ----------
 export type Command =
-  | { type: 'arrive'; plate: string; driver: string; access: AccessId }
+  | { type: 'arrive'; plate: string; driver: string; access: AccessId; owner?: string }
   | { type: 'gateAdmit'; access: AccessId }          // el primero de la pasarela cruza portería
   | { type: 'park'; vehicleId: string }               // entering -> parked (celda occupied)
   | { type: 'leave'; vehicleId: string }              // parked -> exited (celda free)

@@ -14,7 +14,16 @@ import { AnimatedNumber } from "./components/ui/AnimatedNumber";
 import { Icon } from "./components/ui/Icon";
 import { EASE_OUT } from "./components/ui/motion";
 import LoginView from "./features/auth/LoginView";
-import { clearSession, loadSession, saveSession } from "./features/auth/session";
+import {
+  clearSession,
+  consumeUrlLogin,
+  loadSession,
+  ROLE_LABEL,
+  roleOf,
+  saveSession,
+  type Role,
+} from "./features/auth/session";
+import { SessionContext } from "./features/auth/SessionContext";
 
 type TabId = "driver" | "gate" | "valet" | "office" | "sim";
 
@@ -25,6 +34,14 @@ const TABS: readonly NavTab<TabId>[] = [
   { id: "office", label: "Oficina", icon: "office" },
   { id: "sim", label: "Simulación", icon: "flask" },
 ];
+
+/** Qué vistas abre cada cuenta. El conductor solo ve la suya; la operación además controla la simulación. */
+const ROLE_TABS: Record<Role, TabId[]> = {
+  driver: ["driver"],
+  gate: ["gate", "sim"],
+  valet: ["valet", "sim"],
+  office: ["office", "sim"],
+};
 
 const VIEWS: Record<TabId, () => JSX.Element> = {
   driver: DriverView,
@@ -93,7 +110,7 @@ function SimClock() {
 }
 
 /** Sesión activa: inicial del usuario + salir. El correo completo queda en el nombre accesible y el title. */
-function UserChip({ email, onLogout }: { email: string; onLogout: () => void }) {
+function UserChip({ email, role, onLogout }: { email: string; role: Role; onLogout: () => void }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-white/[0.08] py-0.5 pl-0.5 pr-1 text-sm text-white ring-1 ring-inset ring-white/10">
       <span
@@ -103,7 +120,10 @@ function UserChip({ email, onLogout }: { email: string; onLogout: () => void }) 
       >
         {email[0]}
       </span>
-      <span className="sr-only">Sesión: {email}</span>
+      <span className="hidden pl-1 pr-0.5 font-semibold lg:inline">{ROLE_LABEL[role]}</span>
+      <span className="sr-only">
+        Sesión de {ROLE_LABEL[role]}: {email}
+      </span>
       <button
         type="button"
         onClick={onLogout}
@@ -116,7 +136,7 @@ function UserChip({ email, onLogout }: { email: string; onLogout: () => void }) 
 }
 
 export default function App() {
-  const [email, setEmail] = useState<string | null>(loadSession);
+  const [email, setEmail] = useState<string | null>(() => consumeUrlLogin() ?? loadSession());
 
   return (
     <MotionConfig reducedMotion="user">
@@ -141,13 +161,18 @@ export default function App() {
 }
 
 function Workspace({ email, onLogout }: { email: string; onLogout: () => void }) {
-  const [tab, setTab] = useState<TabId>("driver");
+  const role = roleOf(email);
+  const tabs = TABS.filter((t) => ROLE_TABS[role].includes(t.id));
+  const [tab, setTab] = useState<TabId>(tabs[0].id);
   const { state } = useSim();
   const Active = VIEWS[tab];
+  const withNav = tabs.length > 1;
 
   return (
-    <>
-      <div className="app-backdrop min-h-screen pb-[calc(var(--dock-h)+env(safe-area-inset-bottom)+1.5rem)] md:pb-10">
+    <SessionContext.Provider value={{ email, role }}>
+      <div
+        className={`app-backdrop min-h-screen md:pb-10 ${withNav ? "pb-[calc(var(--dock-h)+env(safe-area-inset-bottom)+1.5rem)]" : "pb-10"}`}
+      >
         <a
           href="#vista"
           className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-control focus:bg-surface-card focus:px-4 focus:py-2 focus:font-semibold focus:shadow-e2"
@@ -167,23 +192,25 @@ function Workspace({ email, onLogout }: { email: string; onLogout: () => void })
                 className="h-9 w-auto sm:h-10 xl:h-11"
               />
             </h1>
+            {withNav && (
             <nav
               aria-label="Principal"
               className="order-last hidden w-full md:block xl:order-none xl:w-auto"
             >
               <AppNav
-                tabs={TABS}
+                tabs={tabs}
                 active={tab}
                 onChange={setTab}
                 variant="bar"
               />
             </nav>
+            )}
             <div className="ml-auto flex flex-wrap items-center justify-end gap-1.5">
               <div className="hidden sm:block">
                 <Inventory />
               </div>
               <SimClock />
-              <UserChip email={email} onLogout={onLogout} />
+              <UserChip email={email} role={role} onLogout={onLogout} />
             </div>
             <div className="w-full sm:hidden">
               <Inventory />
@@ -193,8 +220,8 @@ function Workspace({ email, onLogout }: { email: string; onLogout: () => void })
 
         <main
           id="vista"
-          role="tabpanel"
-          aria-labelledby={tabId("bar", tab)}
+          role={withNav ? "tabpanel" : undefined}
+          aria-labelledby={withNav ? tabId("bar", tab) : undefined}
           tabIndex={-1}
           className="mx-auto max-w-7xl px-3 pt-5 focus:outline-none sm:px-6 sm:pt-8"
         >
@@ -221,15 +248,17 @@ function Workspace({ email, onLogout }: { email: string; onLogout: () => void })
           </AnimatePresence>
         </main>
 
-        <nav
-          aria-label="Principal"
-          className="glass-dark on-dark fixed inset-x-2 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-30 p-1.5 md:hidden"
-        >
-          <AppNav tabs={TABS} active={tab} onChange={setTab} variant="dock" />
-        </nav>
+        {withNav && (
+          <nav
+            aria-label="Principal"
+            className="glass-dark on-dark fixed inset-x-2 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-30 p-1.5 md:hidden"
+          >
+            <AppNav tabs={tabs} active={tab} onChange={setTab} variant="dock" />
+          </nav>
+        )}
 
         <Toast />
       </div>
-    </>
+    </SessionContext.Provider>
   );
 }
