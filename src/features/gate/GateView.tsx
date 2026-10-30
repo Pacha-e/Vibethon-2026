@@ -171,7 +171,7 @@ export default function GateView() {
                           </span>
                         )}
                       </p>
-                      {(v.notice || v.reassignments > 0) && (
+                      {v.reassignments > 0 && (
                         <p className="flex gap-1.5 rounded-control bg-state-reserved-tint px-2 py-1.5 text-sm text-state-reserved-ink">
                           <Icon
                             name="alert"

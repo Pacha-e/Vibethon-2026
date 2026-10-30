@@ -4,6 +4,6 @@ App local React+Vite+TS+Tailwind para el parqueadero EAFIT (Las Vegas 4 / Region
 - Única fuente de verdad: `rootReduce` (`src/state/reducer.ts`). La UI solo lee `useSim().state` y llama `dispatch(Command)`. Nada de segundo motor ni estado paralelo.
 - Determinista: tiempo simulado `state.now` (min). Prohibido `Date.now()`/`Math.random()` en dominio.
 - Propiedad de archivos: ver CONTRACTS.md §Propiedad. No editar archivos ajenos; pedir con `CONTRACT|`/`BLOCKER|`.
-- Trabajadores: no git, no instalar dependencias, no tocar config. Comandos: `npm test`, `npx tsc --noEmit -p .`.
+- Trabajadores: no instalar dependencias, no tocar config. Comandos: `npm test`, `npx tsc --noEmit -p .`.
 - No inventar datos oficiales: fixture `src/fixtures/provisional.ts` es PROVISIONAL.
 - Prompts: hooks en `.claude/settings.json` → `scripts/prompt_logger.py` → `evidence/prompts/`.

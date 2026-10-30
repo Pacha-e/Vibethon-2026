@@ -41,6 +41,23 @@
 | 11 | Íconos emoji en navegación: render distinto por sistema | Capturas | Inconsistencia | P2 |
 | 12 | Valet/Oficina: aviso de la sección con franja izquierda y texto sobre navy sin estructura de tarjeta | `Oficina-390.png` | Lectura | P2 |
 
+## Resultado (cerrado en esta iteración)
+| # | Estado |
+|---|---|
+| 1 | ✅ Valet y Oficina con tarjetas claras, mismas primitivas (`Panel`, `ViewHeader`, `Plate`) |
+| 2 | ✅ Móvil: barra superior compacta no fija + dock inferior de vidrio; 0 px de overflow a 390 |
+| 3 | ✅ «Dar paso» pegado a su pasarela, deshabilitado con motivo; política plegable; acciones de simulación como enlaces secundarios |
+| 4 | ✅ Contenedor único `max-w-7xl` |
+| 5 | ✅ Servicios activos primero; historial plegado en tablas |
+| 6 | ✅ Toast sin franja lateral, encima del dock en móvil |
+| 7 | ✅ Estados desde tokens (tinte + ink), sin literales de Tailwind |
+| 8 | ✅ Red Hat Display/Text cargadas; escala 1.25; etiquetas en minúscula de oración |
+| 9 | ✅ Estado vacío del conductor con los 3 pasos; «Mi turno» sube arriba en móvil al registrarse |
+| 10 | ✅ Diálogo de confirmación nativo (`GlassDialog`) |
+| 11 | ✅ Set de íconos SVG propio |
+| 12 | ✅ Avisos con tinte + ícono |
+Verificación: `evidence/test-results/ui-v2-qa.txt`, capturas en `evidence/design/v2-after/`.
+
 ## Plan priorizado
 1. **Formalizar** tokens (superficies, texto, estados con tinte, elevación, movimiento) y tipografía cargada localmente.
 2. **Shell:** barra de vidrio en escritorio; en móvil, barra superior compacta + dock inferior de vidrio con las 5 vistas.

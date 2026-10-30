@@ -57,7 +57,7 @@
       inset 0 1px 0 rgb(255 255 255 / 0.14);
   }
   .btn-gold {
-    @apply bg-king-gold text-king-ink hover:bg-king-goldlogo hover:text-white;
+    @apply bg-king-gold text-king-ink hover:brightness-105;
     box-shadow:
       var(--shadow-1),
       inset 0 1px 0 rgb(255 255 255 / 0.4);
@@ -176,6 +176,13 @@
     }
   }
 }
+
+/* Rendimiento: dentro de una tarjeta opaca u otro vidrio no hay nada nuevo que refractar; se conserva el material
+   (tinte, brillo, aro, sombra) y se ahorra el desenfoque. Así solo desenfocan las capas sobre el lienzo. */
+.card .glass, .card .glass-dark, .glass .glass, .glass .glass-dark, .glass-dark .glass, .glass-dark .glass-dark { -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Sin desenfoque, el tinte sube para que el material no se lave sobre el blanco de la tarjeta. */
+.card .glass-dark, .glass .glass-dark { background-color: rgb(var(--glass-dark-bg) / 0.97); }
+.card .glass { background-color: rgb(var(--surface-card) / 0.92); }
 
 /* Lienzo: luz tenue de marca para que el vidrio tenga algo que refractar. */
 .app-backdrop {

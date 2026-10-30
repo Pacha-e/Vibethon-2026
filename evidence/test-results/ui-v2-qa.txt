@@ -1,0 +1,33 @@
+QA UI v2 — parKING (30-10-2026, Team Lead). Chromium headless vía Playwright MCP sobre `npm run dev`.
+Todo lo de abajo se midió en navegador; no hay resultados inferidos.
+
+1. Build y pruebas
+- npx tsc -b --noEmit: sin errores.
+- npm test: 5 archivos, 70/70 pruebas en verde.
+- npm run build: OK (JS 339 kB / 106 kB gzip; CSS 35 kB; fuentes Red Hat woff2 autoalojadas).
+
+2. Responsive (escenario 6 cargado, las 5 vistas, página completa → evidence/design/v2-after/<Vista>-<ancho>.png)
+- 1440, 1366, 768 y 390 px: overflow horizontal 0 px en las 20 combinaciones.
+- Superficies con backdrop-filter visibles a la vez: 1–2 en todas las combinaciones (antes del ajuste de rendimiento: hasta 5 en Simulación).
+- Errores de consola/página: ninguno.
+
+3. Flujo completo con clics reales a 390 px (flujo-1..4-*.png)
+- Conductor registra ABC123 (LV) → contrata Valet LV 1 → aprueba pago → entrega auto → ficho LV-0008 visible.
+- Portería «Dar paso a ABC123» → Valet «Estacionar ABC123» → «Depositar llaves de ABC123» → Oficina entrega con LV-0008.
+- Segundo intento con el mismo ficho: rechazado (role=alert, «Las llaves aún no están en oficina»).
+
+4. Portería (piloto)
+- «Dar paso a LVC302» deshabilitado con motivo visible «Aún no tiene celda; nadie puede adelantarlo.» (aria-describedby).
+- Tras confirmar LVC301 estacionado, la celda A-01 pasa a Ocupada con la placa (Portería-1366-tras-confirmar.png).
+- Escenario 8 (reasignación) a 390 px: mapa en 2 columnas, B-02 reservada para LVH801.
+
+5. Accesibilidad
+- Tab 1 → «Saltar al contenido»; Tab 2 → pestaña Conductor; End → Simulación (pestañas WAI-ARIA con flechas/Inicio/Fin).
+- Foco visible: contorno oro sobre la barra de vidrio (a11y-foco-teclado-1366.png).
+- Diálogo «¿Reiniciar la simulación?»: abre con foco en «Cancelar», Escape lo cierra, «Reiniciar» confirma y cierra; centrado (corregido: un space-y del padre le quitaba el margen automático).
+- prefers-reduced-motion: reduce emulado → sin errores (reduced-motion-porteria-1366.png).
+- prefers-reduced-transparency: reduce emulado → backdrop-filter de la barra = none (reduced-transparency-1366.png).
+- Contrastes WCAG calculados (fórmula 2.x): texto ≥ 6.4:1 en todos los pares texto/fondo de tokens; bordes de control 3.4:1; foco 8.6:1. Corregidos: hover de btn-gold (blanco sobre oro 3.15:1) y --line-strong (2.54:1).
+
+6. No verificado
+- Lectores de pantalla reales; navegadores distintos de Chromium; rendimiento en hardware de gama media real (solo se redujo el número de capas con desenfoque).

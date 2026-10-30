@@ -13,7 +13,7 @@ import os
 import re
 import sys
 
-PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root, independent of launch cwd
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # project root, independent of launch cwd
 LOG_ROOT = os.path.join(PROJECT, "evidence", "prompts")
 
 # Tools whose input is a prompt/message written for another agent.

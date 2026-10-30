@@ -83,7 +83,7 @@ export function CellMap({
           <h3 className="mb-2 text-sm font-semibold text-fg-strong">
             Zona {zone}
           </h3>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-2">
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]">
             {list.map((cell) => {
               const look = LOOK[cell.status];
               const mine = cell.id === highlightId;

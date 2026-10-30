@@ -24,4 +24,6 @@ Reducers puros: `(state, cmd) => Result {state, events, error?}`. Con error → 
 | valet-haiku | `src/features/valet/**`, `src/features/office/**` |
 | qa-haiku | `tests/**`, `evidence/test-results/**` |
 
+> **Iteración UI v2:** el Lead asumió `src/components/**`, `src/styles/**`, `src/features/gate/**` y `App.tsx`; T8 (Haiku) `src/features/valet/**` + `src/features/office/**`; T9 (Haiku) `src/features/driver/**`, `src/features/sim/**` y `src/components/EtaCard.tsx`. Sin solapamientos.
+
 ## Mensajes: `BLOCKER|tarea|destinatario|dato|impacto` · `CONTRACT|tarea|cambio|motivo|módulos` · `READY|tarea|archivos|interfaz|pruebas` · `REVIEW|tarea|problema|evidencia|propuesta` · `DONE|tarea|resultado|pruebas|riesgos`

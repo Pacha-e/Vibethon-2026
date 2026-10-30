@@ -28,13 +28,11 @@ export const TRACK_ORDER: ServiceStage[] = [
 
 /** Estado de valet: texto + símbolo + color (nunca solo color). */
 export const VALET_STATUS_LABEL: Record<ValetStatus, { text: string; symbol: string; className: string }> = {
-  available: { text: 'Disponible', symbol: '○', className: 'text-emerald-300' },
-  held_for_payment: { text: 'Reservado (pago)', symbol: '◐', className: 'text-king-gold' },
-  in_service: { text: 'En servicio', symbol: '●', className: 'text-sky-300' },
+  available: { text: 'Disponible', symbol: '○', className: 'text-state-free-ink' },
+  held_for_payment: { text: 'Reservado (pago)', symbol: '◐', className: 'text-state-reserved-ink' },
+  in_service: { text: 'En servicio', symbol: '●', className: 'text-king-royal' },
 };
 
-export const BTN_PRIMARY =
-  'min-h-[44px] w-full rounded-lg bg-king-gold px-3 py-2 text-left font-semibold text-king-ink hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-king-gold disabled:opacity-50';
+export const BTN_PRIMARY = 'btn btn-primary w-full';
 
-export const BTN_SECONDARY =
-  'min-h-[44px] rounded-lg border border-white px-3 py-2 font-semibold text-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-king-gold';
+export const BTN_SECONDARY = 'btn btn-secondary';

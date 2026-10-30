@@ -2,7 +2,6 @@
 
 **Proyecto:** Parqueadero inteligente universitario — NEXT × EAFIT, Vibethon 2026  
 **Fecha de trabajo:** 30 de octubre de 2026  
-**Repositorio:** https://github.com/Pacha-e/Vibethon-2026  
 **Herramienta utilizada en esta etapa:** ChatGPT, dentro de un proyecto específico dedicado a Vibethon.  
 **Alcance del registro:** desde la configuración del proyecto hasta la solicitud de preparar el prompt maestro para Claude Code. No se incluyen interacciones posteriores ni se afirma que Claude haya ejecutado tareas en este período.
 
@@ -263,17 +262,17 @@ Quedaron definidos los criterios de planificación: requisitos, restricciones, e
 
 ---
 
-## Etapa 4 — Creación y planificación del repositorio
+## Etapa 4 — Creación y planificación del proyecto
 
 ### Instrucción de trabajo (resumen)
 
-Se pidió establecer primero el enunciado y el plan de acción en el repositorio del proyecto, antes de desarrollar código. Esta sección resume el objetivo de la petición, sin presentarlo como cita literal.
+Se pidió establecer primero el enunciado y el plan de acción en la carpeta del proyecto, antes de desarrollar código. Esta sección resume el objetivo de la petición, sin presentarlo como cita literal.
 
-**Objetivo:** disponer de un repositorio documentado y organizado antes de escribir el código.
+**Objetivo:** disponer de un proyecto local documentado y organizado antes de escribir el código.
 
-### Trabajo realizado con asistencia de ChatGPT y herramientas de GitHub
+### Trabajo realizado con asistencia de ChatGPT
 
-El repositorio `Pacha-e/Vibethon-2026` se verificó inicialmente vacío. Se creó el README y se organizaron cinco documentos de trabajo:
+La carpeta del proyecto estaba inicialmente vacía. Se creó el README y se organizaron cinco documentos de trabajo:
 
 | Archivo | Contenido |
 |---|---|
@@ -284,14 +283,14 @@ El repositorio `Pacha-e/Vibethon-2026` se verificó inicialmente vacío. Se cre�
 | [04-DECISIONES-Y-DUDAS.md](04-DECISIONES-Y-DUDAS.md) | Confirmaciones oficiales, decisiones propuestas e insumos pendientes. |
 | [05-PROMPTING-Y-EVIDENCIAS.md](05-PROMPTING-Y-EVIDENCIAS.md) | Bitácora de planificación y prompting; este documento. |
 
-También se abrieron seis tareas en GitHub:
+También se definieron seis tareas de trabajo:
 
-- [#1 — Mapas, condiciones iniciales y eventos oficiales](https://github.com/Pacha-e/Vibethon-2026/issues/1).
-- [#2 — Motor de colas, celdas y asignación justa](https://github.com/Pacha-e/Vibethon-2026/issues/2).
-- [#3 — Interfaces de conductor y portería](https://github.com/Pacha-e/Vibethon-2026/issues/3).
-- [#4 — Valet y oficina de llaves](https://github.com/Pacha-e/Vibethon-2026/issues/4).
-- [#5 — Nueve situaciones de prueba oficiales](https://github.com/Pacha-e/Vibethon-2026/issues/5).
-- [#6 — Demostración, UI/UX y evidencia de prompting](https://github.com/Pacha-e/Vibethon-2026/issues/6).
+- #1 — Mapas, condiciones iniciales y eventos oficiales.
+- #2 — Motor de colas, celdas y asignación justa.
+- #3 — Interfaces de conductor y portería.
+- #4 — Valet y oficina de llaves.
+- #5 — Nueve situaciones de prueba oficiales.
+- #6 — Demostración, UI/UX y evidencia de prompting.
 
 ### Ajustes de enfoque documentados
 
@@ -301,7 +300,7 @@ También se abrieron seis tareas en GitHub:
 - Se reservaron tareas independientes para que varias IAs pudieran colaborar sin editar los mismos archivos.
 - Se identificó como dependencia pendiente la incorporación de **dos mapas, condiciones iniciales y eventos** que debe suministrar la organización.
 
-**Evidencia disponible:** archivos y seis issues creados en el repositorio. El historial de commits permite verificar su incorporación; todavía no certifica el funcionamiento de un MVP.
+**Evidencia disponible:** archivos del proyecto y las seis tareas definidas. Todavía no certifica el funcionamiento de un MVP.
 
 ---
 
@@ -309,7 +308,7 @@ También se abrieron seis tareas en GitHub:
 
 ### Prompt registrado — fragmento pertinente de la solicitud
 
-> dame el prompt completo para claude para iniciar el plan delegando a modelos haiku, tiene que ser de manera que los subajentes n tengan que leer el contexto cada vez, que trabajen en equipo, puedan hablarse entre si y no se superpongan en su trabajo, tambien hay que ir construyendo un log de prompts en el repositorio de cada prompt con la herramienta
+> dame el prompt completo para claude para iniciar el plan delegando a modelos haiku, tiene que ser de manera que los subajentes n tengan que leer el contexto cada vez, que trabajen en equipo, puedan hablarse entre si y no se superpongan en su trabajo, tambien hay que ir construyendo un log de prompts en la carpeta del proyecto de cada prompt con la herramienta
 
 ### Objetivos solicitados
 
@@ -346,7 +345,7 @@ El prompt de arranque está guardado **textualmente** en [evidence/prompts/BOOTS
 ### Registro de prompts — estado real
 
 - **Hooks** (`.claude/settings.json` → `scripts/prompt_logger.py`): UserPromptSubmit, PreToolUse/PostToolUse (Agent, SendMessage, TaskCreate, TaskUpdate), SubagentStart/SubagentStop. Escriben JSONL append-only por sesión en `evidence/prompts/<fecha>/<sesión>.jsonl`, con hash SHA-256 y secretos enmascarados. La autoprueba con un evento simulado escribió una línea correcta (token enmascarado como `token=***`).
-- **Limitación observada:** en esta sesión los hooks **no se dispararon** (ningún archivo se creó tras un `TaskCreate` real). La sesión se inició en `/home/user`, no en el repositorio, y copiar los hooks a la configuración de ese directorio fue **denegado por el control de permisos**. No se forzó. Los hooks quedan activos para quien abra Claude Code dentro del repositorio.
+- **Limitación observada:** en esta sesión los hooks **no se dispararon** (ningún archivo se creó tras un `TaskCreate` real). La sesión se inició en `/home/user`, no en la carpeta del proyecto, y copiar los hooks a la configuración de ese directorio fue **denegado por el control de permisos**. No se forzó. Los hooks quedan activos para quien abra Claude Code dentro de la carpeta del proyecto.
 - **Respaldo verificable:** `scripts/export_transcript_prompts.py` extrae del **transcript real** de Claude Code (sesión líder + subagentes) los turnos de usuario, cada instrucción `Agent`/`SendMessage`/`TaskCreate`/`TaskUpdate` y los prompts recibidos por cada subagente. Salida: `evidence/prompts/2026-10-30/<sesión>.transcript-export.jsonl` (`capture: "transcript-export"`). No reconstruye mensajes: solo exporta lo que figura en el transcript.
 
 ### Ciclo real de corrección de prompt (fallo → corrección → nueva ejecución → prueba)
