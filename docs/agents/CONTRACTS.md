@@ -13,7 +13,7 @@ Reducers puros: `(state, cmd) => Result {state, events, error?}`. Con error → 
 - `valetSettle(state): Result` — idempotente (mismo objeto si nada cambia): vence holds (`holdExpiresAt <= now` → service `payment_expired`, valet available); sincroniza servicios `car_handed` cuyo vehículo está `parked` → stage `parked`, `cellId`.
 - Ficho: `${access}-${seq 4 dígitos}` único. Ingreso simulado al aprobar pago (`valet.earnings += price`).
 
-## Raíz — `src/state/reducer.ts` (Lead): `rootReduce(state, cmd)` despacha → `valetSettle` → `settle`. `batch` = varios comandos atómicos en orden. Store `useSim()` → `{state, dispatch, feedback}` en `src/state/store.tsx`.
+## Raíz — `src/state/reducer.ts` (Lead): `rootReduce(state, cmd)` despacha → `valetSettle` → `settle`. `batch` = varios comandos en orden, cada uno atómico: `state` incluye los aceptados y `error` lista los rechazados (excepción documentada al contrato Result). Store `useSim()` → `{state, dispatch, feedback}` en `src/state/store.tsx`.
 
 ## Propiedad
 | Agente | Archivos |

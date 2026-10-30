@@ -132,6 +132,8 @@ export type EngineCommandType = 'arrive' | 'gateAdmit' | 'park' | 'leave' | 'req
 export type ValetCommandType = 'valetHold' | 'valetPay' | 'valetHandover' | 'valetDeposit' | 'claimKeys';
 
 // Resultado de cualquier reducer. Si error != undefined, state === estado de entrada (sin cambios).
+// EXCEPCIÓN `batch` (solicitudes simultáneas): cada subcomando es atómico por separado; `state` incluye los
+// subcomandos aceptados y `error` enumera los rechazados (que no dejaron ningún cambio). Ver REVIEW de T4-QA.
 export interface Result { state: SimState; events: SimEvent[]; error?: string }
 
 // ---------- Derivados para UI (implementados en src/domain/engine/selectors.ts) ----------

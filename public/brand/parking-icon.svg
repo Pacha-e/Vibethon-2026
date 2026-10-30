@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">parKING - icono minimalista</title>
+  <g id="symbol">
+    <path fill="#0B1F3A" d="M48 0H208A48 48 0 0 1 256 48V208A48 48 0 0 1 208 256H48A48 48 0 0 1 0 208V48A48 48 0 0 1 48 0Z"/>
+    <path fill="#F2B705" d="M64 184L64 160L68 100L98 136L128 72L158 136L188 100L192 160L192 184Z"/>
+  </g>
+</svg>
