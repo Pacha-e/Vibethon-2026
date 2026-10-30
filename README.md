@@ -16,6 +16,8 @@ npm run dev
 
 Abrir http://127.0.0.1:5173. Pruebas: `npm test`. Build: `npm run build`.
 
+Al abrir, la app pide un **correo institucional `@eafit.edu.co`** (cualquier otro dominio se rechaza). Es una puerta de acceso de la demo local: el correo se guarda solo en este navegador (`localStorage`) y no se envía a ningún servidor; **no** es autenticación real. «Salir» en la barra cierra la sesión.
+
 ## Vistas (una sola app local, una sola fuente de verdad)
 
 | Vista | Usuario | Qué hace |
