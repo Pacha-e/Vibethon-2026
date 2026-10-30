@@ -57,7 +57,7 @@
       inset 0 1px 0 rgb(255 255 255 / 0.14);
   }
   .btn-gold {
-    @apply bg-king-gold text-king-ink hover:bg-king-goldlogo hover:text-white;
+    @apply bg-king-gold text-king-ink hover:brightness-105;
     box-shadow:
       var(--shadow-1),
       inset 0 1px 0 rgb(255 255 255 / 0.4);

@@ -16,7 +16,7 @@
   --surface-card: 252 253 254; /* tarjetas opacas (sin blanco puro) */
   --surface-sunken: 244 246 249; /* bloques dentro de una tarjeta */
   --line: 218 223 231; /* bordes suaves */
-  --line-strong: 150 162 179; /* bordes de control (3:1 sobre card) */
+  --line-strong: 125 138 157; /* bordes de control: 3.4:1 sobre card (WCAG 1.4.11) */
   --text-strong: 22 30 41; /* 16.5:1 sobre card */
   --text-body: 45 57 74; /* 11:1 */
   --text-muted: 71 85 105; /* 7.6:1 */
