@@ -321,3 +321,55 @@ También se abrieron seis tareas en GitHub:
 - Conservar un **registro de los prompts** por medio de las herramientas de ejecución, con trazabilidad de iteraciones y correcciones.
 
 **Estado al cierre de esta línea de tiempo:** petición del prompt maestro realizada. El registro termina en esta solicitud deliberadamente; **no incluye la respuesta posterior con el prompt maestro, interacciones siguientes, ejecución de Claude Code ni resultados de la aplicación**.
+
+---
+
+## Etapa 6 — Ejecución con Claude Code: Team Lead + agentes Haiku (30-10-2026, 14:44–16:00 COL)
+
+### Prompt maestro
+
+El prompt de arranque está guardado **textualmente** en [evidence/prompts/BOOTSTRAP-PROMPT.md](../evidence/prompts/BOOTSTRAP-PROMPT.md). Se copió del transcript JSONL de la sesión líder (incluye su SHA-256) y se identifica como **registro inicial incorporado manualmente**: los hooks se instalaron después de recibir ese mensaje.
+
+### Orquestación real
+
+| Agente | Modelo solicitado | Tarea (cápsula) | Resultado verificado |
+|---|---|---|---|
+| Team Lead | Claude (principal) | Contratos, store, config, escenarios, integración | `src/contracts`, `src/state`, `src/fixtures`; build y E2E |
+| engine-haiku | `haiku`, effort `xhigh` | [T1-ENGINE](agents/TASKS/T1-ENGINE.md) | 29 tests del motor en verde |
+| valet-haiku | `haiku`, effort `xhigh` | [T3-VALET](agents/TASKS/T3-VALET.md) | 19 tests de valet en verde |
+| ui-haiku | `haiku`, effort `xhigh` | [T2-UI](agents/TASKS/T2-UI.md) | 5 vistas sin errores de consola (Playwright) |
+| qa-haiku | `haiku`, effort `xhigh` | [T4-QA](agents/TASKS/T4-QA.md) | ver `evidence/test-results/` |
+| logo-haiku | `haiku`, effort `xhigh` | Skill `kaankiziltug/logo-design-skill` | ver `public/brand/` |
+
+**Sustitución declarada:** esta sesión de Claude Code no ofrecía *Agent Teams* (no existía la herramienta de creación de equipos). Se usaron subagentes en segundo plano (`Agent` con `model: haiku`), la lista compartida de tareas (`TaskCreate`/`TaskUpdate`, con T4 bloqueada por T1 y T3) y `SendMessage` para continuar a un agente con su contexto. Cada agente recibió solo su cápsula, los contratos y las rutas que podía editar.
+
+### Registro de prompts — estado real
+
+- **Hooks** (`.claude/settings.json` → `scripts/prompt_logger.py`): UserPromptSubmit, PreToolUse/PostToolUse (Agent, SendMessage, TaskCreate, TaskUpdate), SubagentStart/SubagentStop. Escriben JSONL append-only por sesión en `evidence/prompts/<fecha>/<sesión>.jsonl`, con hash SHA-256 y secretos enmascarados. La autoprueba con un evento simulado escribió una línea correcta (token enmascarado como `token=***`).
+- **Limitación observada:** en esta sesión los hooks **no se dispararon** (ningún archivo se creó tras un `TaskCreate` real). La sesión se inició en `/home/user`, no en el repositorio, y copiar los hooks a la configuración de ese directorio fue **denegado por el control de permisos**. No se forzó. Los hooks quedan activos para quien abra Claude Code dentro del repositorio.
+- **Respaldo verificable:** `scripts/export_transcript_prompts.py` extrae del **transcript real** de Claude Code (sesión líder + subagentes) los turnos de usuario, cada instrucción `Agent`/`SendMessage`/`TaskCreate`/`TaskUpdate` y los prompts recibidos por cada subagente. Salida: `evidence/prompts/2026-10-30/<sesión>.transcript-export.jsonl` (`capture: "transcript-export"`). No reconstruye mensajes: solo exporta lo que figura en el transcript.
+
+### Ciclo real de corrección de prompt (fallo → corrección → nueva ejecución → prueba)
+
+1. **Prompt utilizado:** la cápsula T2-UI pedía un componente `Toast` que mostrara `useSim().feedback`, sin decir dónde debía montarse. El Team Lead ya lo montaba en `App.tsx`.
+2. **Resultado esperado:** un único aviso global por acción.
+3. **Fallo observado:** ui-haiku renderizó `<Toast />` dentro de `DriverView`, `GateView` y `SimView`, y lo reportó en su `DONE` («no duplicar Toast en App (cada vista lo renderiza)»). Con el montaje de `App.tsx`, cada acción mostraba **dos** avisos. El fallo se detectó al revisar el reporte y con `grep -n "Toast" src/features/*/*.tsx` (3 coincidencias). La causa fue una instrucción ambigua del Team Lead, no un error del modelo.
+4. **Corrección:** el Lead integró (quitó los montajes por vista) y reenvió a ui-haiku la tarea T2-UI-POLISH con la **regla corregida**: «Toast se monta UNA sola vez en App.tsx; ninguna vista lo importa ni renderiza», más el autocierre a 6 s y la autoselección del vehículo. La regla quedó también en la cápsula T2-UI.
+5. **Nueva ejecución:** ui-haiku completó T2-UI-POLISH sin volver a introducir `<Toast />` en las vistas (`tsc` limpio).
+6. **Prueba posterior:** [evidence/test-results/toast-single-mount.txt](../evidence/test-results/toast-single-mount.txt), con Playwright sobre la app real. Resultado: exactamente 1 aviso visible en Conductor, Portería y Simulación, 0 tras 6,5 s, autoselección del vehículo correcta y sin errores de página. Script: `evidence/test-results/toast-check.playwright.cjs`.
+
+### Incidencias de agentes registradas
+
+- engine-haiku informó una llamada accidental a una herramienta de creación de sesiones remotas, ajena a su tarea. El control de permisos la denegó y no creó nada. Queda anotada como riesgo de herramientas excesivas en subagentes: conviene limitar sus herramientas en la próxima iteración.
+- ui-haiku se desvió de una instrucción con un motivo: detecta el vehículo nuevo comparando con el estado previo en lugar de buscarlo en los eventos. El cambio fue aceptado.
+
+### Índice de evidencias
+
+| Evidencia | Ruta |
+|---|---|
+| Prompt de arranque (manual, textual) | `evidence/prompts/BOOTSTRAP-PROMPT.md` |
+| Prompts observados (transcript) | `evidence/prompts/2026-10-30/*.transcript-export.jsonl` |
+| Logger + hooks | `scripts/prompt_logger.py`, `.claude/settings.json` |
+| Exportador de transcript | `scripts/export_transcript_prompts.py` |
+| Contexto compacto y cápsulas | `CLAUDE.md`, `docs/agents/` |
+| Resultados de pruebas | `evidence/test-results/` |

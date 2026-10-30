@@ -1,15 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSim } from '../state/store';
 
 export function Toast() {
   const { feedback, clearFeedback } = useSim();
+  // Ref: un re-render del store no reinicia el temporizador.
+  const closeRef = useRef(clearFeedback);
+  closeRef.current = clearFeedback;
 
+  // Auto-cierre a los 6 s. Depende del objeto feedback (cada dispatch crea uno nuevo); id puede repetirse.
   useEffect(() => {
     if (!feedback) return;
-    // Los errores permanecen más tiempo para dar margen de lectura.
-    const t = window.setTimeout(clearFeedback, feedback.kind === 'error' ? 8000 : 4000);
+    const t = window.setTimeout(() => closeRef.current(), 6000);
     return () => window.clearTimeout(t);
-  }, [feedback, clearFeedback]);
+  }, [feedback]);
 
   const isError = feedback?.kind === 'error';
 

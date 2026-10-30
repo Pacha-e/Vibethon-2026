@@ -1,13 +1,14 @@
-# STATUS — checkpoint (actualiza Team Lead)
-**Fase:** B — ejecución paralela · **Hora:** 15:00 COL · **Cierre:** 16:00
-| Tarea | Owner | Estado | Archivos |
+# STATUS — checkpoint (Team Lead)
+**Fase:** D/E — integración y demo · **Cierre:** 16:00 COL
+| Tarea | Owner | Estado | Evidencia |
 |---|---|---|---|
-| T0 contratos/store/config/escenarios | Lead | ✅ | src/contracts, src/state, src/fixtures, config |
-| T1-ENGINE | engine-haiku | ⏳ en curso | src/domain/engine |
-| T2-UI | ui-haiku | ⏳ en curso | src/features/{driver,gate,sim}, src/components |
-| T3-VALET | valet-haiku | ⏳ en curso | src/features/{valet,office} |
-| T4-QA | qa-haiku | ⛔ bloqueada por T1,T3 | tests |
-| T5-LOGO | logo-haiku | ⏳ en curso | public/brand |
-**Decisiones:** Agent Teams no disponible en esta sesión → subagentes Haiku en background + TaskList + SendMessage. Hooks en `.claude/settings.json` no cargados en esta sesión (iniciada en /home/user; copiar hooks allí fue denegado por permisos) → respaldo `scripts/export_transcript_prompts.py`.
-**Pendiente:** datos oficiales (mapas/eventos) — fixture provisional.
-**Próxima acción:** integrar al recibir DONE de T1/T3/T2; lanzar QA.
+| T0 contratos/store/config/escenarios | Lead | ✅ | commit 1a8b226 |
+| T1-ENGINE | engine-haiku | ✅ 29 tests | src/domain/engine |
+| T2-UI (+POLISH) | ui-haiku | ✅ tsc limpio, 5 vistas sin errores (Playwright) | src/features/{driver,gate,sim}, src/components |
+| T3-VALET | valet-haiku | ✅ 19 tests | src/features/{valet,office} |
+| T4-QA | qa-haiku | ⏳ | tests/, evidence/test-results/ |
+| T5-LOGO | logo-haiku | ⏳ | public/brand/ |
+**Verificado por Lead:** build Vite OK; smoke de los 9 escenarios por rootReduce; E2E Playwright (llegada→celda→valet; ficho inválido rechazado, ficho válido entrega llaves); Toast único.
+**Decisiones:** Agent Teams no disponible → subagentes Haiku en background + TaskList + SendMessage. Hooks no cargados en esta sesión → exportador de transcript.
+**Riesgos:** datos oficiales ausentes (fixture provisional); estado solo en memoria.
+**Próxima acción:** integrar QA + logo, exportar prompts, commit y push.

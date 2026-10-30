@@ -1,40 +1,67 @@
-# VIBETHON 2026 — Parqueadero inteligente universitario
+# parKING — Parqueadero inteligente universitario (Vibethon EAFIT 2026)
 
-**Repositorio oficial de trabajo:** https://github.com/Pacha-e/Vibethon-2026
+**Repositorio:** https://github.com/Pacha-e/Vibethon-2026 · Maratón de Vibe Coding NEXT × EAFIT, 30-10-2026.
 
-Proyecto de la maratón de Vibe Coding **NEXT × EAFIT (30 de octubre de 2026)**.
+parKING coordina los accesos **Las Vegas** (pasarela de 4 vehículos) y **Regional** (6) sobre **un único inventario de celdas**, muestra a cada conductor su turno y una espera estimada honesta, asigna las celdas con una política justa y declarada, y permite contratar uno de los **8 valets de su acceso** desde la pasarela. Funciona en local, sin nube ni base de datos.
 
-> **Estado:** Fase 0 — requisitos, planificación y preparación de la demostración. Este repositorio todavía **no contiene una aplicación**.
+## Ejecutar
 
-## Documento rector
+```bash
+npm install
+```
 
-1. [Enunciado del reto (transcripción estructurada de las 4 páginas)](docs/01-ENUNCIADO.md)
-2. [Rúbrica oficial de evaluación (100 puntos)](docs/02-RUBRICA.md)
-3. [Plan de acción y entregables](docs/03-PLAN-DE-ACCION.md)
-4. [Decisiones, supuestos y dudas](docs/04-DECISIONES-Y-DUDAS.md)
-5. [Bitácora de prompting y pruebas](docs/05-PROMPTING-Y-EVIDENCIAS.md)
+```bash
+npm run dev
+```
 
-**Fuentes:** enunciado entregado por la organización (4 páginas) y [sitio oficial del evento](https://universonext.com/vibethon).
+Abrir http://127.0.0.1:5173. Pruebas: `npm test`. Build: `npm run build`.
 
-## Restricciones oficiales importantes
+## Vistas (una sola app local, una sola fuente de verdad)
 
-- Prototipo **local**. Sin obligación de base de datos, nube o despliegue.
-- Cámaras, registro automático, llegadas, salidas y pagos: **simulados**.
-- Dos accesos: Las Vegas (**4 vehículos** en pasarela) y Regional (**6**).
-- **8 valets asignados por acceso**; ambos comparten **un inventario de celdas**.
-- Los mapas, estados iniciales y eventos entregados por la organización son la fuente de verdad para la simulación.
-- El croquis con 12 celdas y la tarifa de $8.000 son **ilustrativos**, no configuraciones obligatorias.
-- Cada parte funcional debe ser demostrable y verificable mediante los casos del enunciado.
+| Vista | Usuario | Qué hace |
+|---|---|---|
+| 🚗 Conductor | Estudiante | Llegar a la fila, ver posición, vehículos delante, espera estimada, celda + recorrido, contratar valet, seguir el servicio |
+| 🚧 Portería | Portero | Pasarelas LV 4 / RG 6 y filas exteriores, «Dar paso» al primero (solo si tiene celda o sale sin estacionar), mapa de celdas libre/reservada/ocupada |
+| 🔑 Valet | Valets | 8 + 8 valets: Disponible / Reservado (pago) / En servicio; estacionar, depositar llaves, historial ingreso ↔ servicio |
+| 🏢 Oficina | Oficina | Reclamación de llaves con ficho único y registro de entregas |
+| 🧪 Simulación | Jurado / demo | Los 9 escenarios oficiales con un clic, reloj simulado, reinicio y bitácora de eventos |
 
-## Orden de trabajo
+## Política justa declarada
 
-**Primero:** verificar insumos oficiales y fijar contratos de estados e invariantes.  
-**Después:** motor de simulación y pruebas, interfaces por rol y valet.  
-**Finalmente:** integración, demo de punta a punta y evidencia de corrección de prompts.
+**Round Robin entre accesos + FIFO dentro de cada acceso.** Cada celda que se libera se reserva, en una sola transición, al primer vehículo sin celda del acceso al que le toca; si los dos accesos tienen demanda, recibe el acceso distinto al último servido; si solo uno tiene demanda, recibe ese. Los vehículos que ya cruzaron portería y encontraron su celda ocupada tienen prioridad para la reasignación. Contratar valet **no** da prioridad ni libera espacio en la pasarela.
 
-No confundir propuestas técnicas o de algoritmo con requisitos oficiales; se distinguen en los documentos.
+**Ejemplo de beneficio (escenario 3):** con el parqueadero lleno esperan LVC301 y LVC302 (Las Vegas) y RGC303 (Regional). La 1.ª celda liberada va a LVC301; la 2.ª va a RGC303, aunque Las Vegas siga teniendo demanda. Ningún acceso acapara las celdas y cada celda tiene un único dueño.
 
-## Normas mínimas para colaboradores y agentes
+## Espera estimada (sin inventar datos)
+
+Se calcula la demanda que va delante según la política (FIFO propio + alternancia con el otro acceso) y el ritmo de liberación de celdas en los últimos 30 min simulados. Se muestra un **rango** etiquetado «estimado, no garantizado». Con menos de 2 liberaciones recientes se muestra **«datos insuficientes»**. Si la estimación supera 15 min se **sugiere** el valet, que se puede contratar igual con una espera menor.
+
+## Arquitectura
+
+React 18 + Vite + TypeScript + Tailwind. Motor puro y determinista (tiempo simulado, sin `Date.now()` ni aleatoriedad):
+
+- `src/contracts/` — tipos y comandos compartidos.
+- `src/domain/engine/` — filas, capacidades, asignación, reasignación, ETA.
+- `src/features/valet/logic.ts` — valet, pago simulado, ficho, llaves.
+- `src/state/reducer.ts` — `rootReduce`: **única** transición atómica, en la que se verifica y se reserva sin `await`. `batch` modela solicitudes simultáneas.
+- `src/fixtures/` — fixture provisional y los 9 escenarios.
+
+## Limitaciones conocidas
+
+- **Datos provisionales:** los mapas, condiciones iniciales y eventos oficiales no llegaron al repositorio. Se usa un fixture del equipo (16 celdas en zonas A/B, 13 ocupadas al inicio, tarifa configurable de 8.000 COP, bloqueo de pago de 2 min). Se reemplaza con otro `SimConfig` sin tocar el motor.
+- Una sola pestaña es la fuente de verdad: no hay sincronización entre pestañas ni dispositivos.
+- Pagos, cámaras y llegadas son simulados (botones). El recorrido a la celda es un texto conceptual, no una ruta sobre un mapa real.
+- El estado vive en memoria: al recargar la página se reinicia la simulación.
+
+## Cómo lo construimos (prompting)
+
+Un Team Lead (Claude) definió los contratos y delegó en agentes Haiku: motor, UI, valet/oficina, QA y logo. Ver [docs/05-PROMPTING-Y-EVIDENCIAS.md](docs/05-PROMPTING-Y-EVIDENCIAS.md), [docs/agents/](docs/agents/) y [evidence/](evidence/).
+
+## Documentos
+
+1. [Enunciado](docs/01-ENUNCIADO.md) · 2. [Rúbrica](docs/02-RUBRICA.md) · 3. [Plan](docs/03-PLAN-DE-ACCION.md) · 4. [Decisiones](docs/04-DECISIONES-Y-DUDAS.md) · 5. [Prompting y evidencias](docs/05-PROMPTING-Y-EVIDENCIAS.md)
+
+## Normas mínimas para colaboradores y agentes (Fase 0, vigentes)
 
 - No inventar reglas, celdas, tiempos ni resultados de pruebas.
 - No sustituir los mapas/eventos oficiales por supuestos silenciosos.

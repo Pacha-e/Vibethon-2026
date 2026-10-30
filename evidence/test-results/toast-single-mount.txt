@@ -1,0 +1,11 @@
+# Verificación Toast único — 2026-10-30T19:58:32Z
+Comando: node toast.cjs (Playwright + Chromium contra npm run dev)
+grep '<Toast' src:
+src/App.tsx:59:      <Toast />
+
+toasts visibles con el mensaje tras 'arrive' en Conductor: 1
+vehículo autoseleccionado: true
+Portería: toasts con mensaje = 1
+Simulación: toasts con mensaje = 1
+tras 6.5 s: toasts con mensaje = 0
+errores de página: []

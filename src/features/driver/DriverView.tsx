@@ -253,7 +253,6 @@ export default function DriverView() {
           <HireValetPanel vehicleId={me.id} />
         </section>
       )}
-
     </div>
   );
 }

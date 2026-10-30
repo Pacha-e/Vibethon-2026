@@ -29,6 +29,31 @@ export default function SimView() {
         <p className="mt-1 text-base text-slate-800">Ejecute escenarios de prueba o avance el reloj simulado.</p>
       </header>
 
+      <div className="grid gap-6 md:grid-cols-2">
+        <section aria-labelledby="demo-title" className="card space-y-3">
+          <h2 id="demo-title" className="text-lg font-bold text-king-ink">
+            Guion de demo (2 min)
+          </h2>
+          <ol className="list-decimal space-y-2 pl-5 text-base text-king-ink">
+            <li>Conductor llega por Las Vegas y ve su turno y ETA.</li>
+            <li>Portería da paso y confirma celda.</li>
+            <li>Valet: contratar → pagar → entregar → estacionar → depositar.</li>
+            <li>Oficina reclama con ficho.</li>
+            <li>Ejecutar escenarios 1–9.</li>
+          </ol>
+        </section>
+        <section aria-labelledby="benefit-title" className="card space-y-3">
+          <h2 id="benefit-title" className="text-lg font-bold text-king-ink">
+            Beneficio concreto
+          </h2>
+          <p className="text-base text-king-ink">
+            Sin coordinación, dos accesos podían reservar la misma celda y el conductor no sabía cuánto esperar. Con
+            parKING, cada celda liberada va a un único vehículo, alternando accesos (ver escenario 3), y la espera se
+            muestra como rango o «datos insuficientes».
+          </p>
+        </section>
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <section aria-labelledby="scenarios-title" className="card space-y-4">
           <h2 id="scenarios-title" className="text-lg font-bold text-king-ink">
@@ -118,7 +143,6 @@ export default function SimView() {
           </section>
         </div>
       </div>
-
     </div>
   );
 }
