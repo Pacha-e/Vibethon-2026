@@ -1,6 +1,6 @@
 # parKING — Parqueadero inteligente universitario (Vibethon EAFIT 2026)
 
-**Repositorio:** https://github.com/Pacha-e/Vibethon-2026 · Maratón de Vibe Coding NEXT × EAFIT, 30-10-2026.
+Maratón de Vibe Coding NEXT × EAFIT, 30-10-2026.
 
 parKING coordina los accesos **Las Vegas** (pasarela de 4 vehículos) y **Regional** (6) sobre **un único inventario de celdas**, muestra a cada conductor su turno y una espera estimada honesta, asigna las celdas con una política justa y declarada, y permite contratar uno de los **8 valets de su acceso** desde la pasarela. Funciona en local, sin nube ni base de datos.
 
@@ -48,7 +48,7 @@ React 18 + Vite + TypeScript + Tailwind. Motor puro y determinista (tiempo simul
 
 ## Limitaciones conocidas
 
-- **Datos provisionales:** los mapas, condiciones iniciales y eventos oficiales no llegaron al repositorio. Se usa un fixture del equipo (16 celdas en zonas A/B, 13 ocupadas al inicio, tarifa configurable de 8.000 COP, bloqueo de pago de 2 min). Se reemplaza con otro `SimConfig` sin tocar el motor.
+- **Datos provisionales:** los mapas, condiciones iniciales y eventos oficiales no llegaron al equipo. Se usa un fixture del equipo (16 celdas en zonas A/B, 13 ocupadas al inicio, tarifa configurable de 8.000 COP, bloqueo de pago de 2 min). Se reemplaza con otro `SimConfig` sin tocar el motor.
 - Una sola pestaña es la fuente de verdad: no hay sincronización entre pestañas ni dispositivos.
 - Pagos, cámaras y llegadas son simulados (botones). El recorrido a la celda es un texto conceptual, no una ruta sobre un mapa real.
 - El estado vive en memoria: al recargar la página se reinicia la simulación.

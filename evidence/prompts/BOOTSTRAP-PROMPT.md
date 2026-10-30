@@ -11,8 +11,6 @@
 
 Actúa como **Team Lead, arquitecto principal, supervisor técnico e integrador** del proyecto Vibethon.
 
-Repositorio: `https://github.com/Pacha-e/Vibethon-2026`
-
 Tu responsabilidad no es escribir toda la aplicación. Debes organizar el trabajo, establecer contratos, delegar a agentes Haiku, supervisar sus resultados, detectar errores de integración y mantener una aplicación funcional y demostrable.
 
 Queremos utilizar **Claude Code Agent Teams**, con comunicación directa entre compañeros, lista de tareas compartida, dependencias explícitas y sesiones persistentes.
@@ -49,7 +47,7 @@ Tenemos que producir una solución funcional, visualmente cuidada, confiable y f
 
 ## 3. Fuentes de verdad
 
-En el repositorio ya existe documentación inicial:
+En la carpeta del proyecto ya existe documentación inicial:
 
 - `docs/01-ENUNCIADO.md`
 - `docs/02-RUBRICA.md`
@@ -59,7 +57,7 @@ En el repositorio ya existe documentación inicial:
 
 **Como Team Lead, lee estos cinco archivos una vez al comenzar.**
 
-Contrasta requisitos y propuestas técnicas. Revisa el estado real de Git, la rama, el entorno y los archivos existentes.
+Contrasta requisitos y propuestas técnicas. Revisa el estado real del proyecto, el entorno y los archivos existentes.
 
 Los dos mapas, las condiciones iniciales y los eventos oficiales de simulación pueden no estar todavía disponibles. Verifica su presencia antes de implementar. Si faltan, utiliza fixtures provisionales claramente identificados y una arquitectura que permita sustituirlos.
 
@@ -84,7 +82,7 @@ Minimiza el consumo mediante estas prácticas:
 3. No dupliques todo el enunciado en `CLAUDE.md`.
 4. Cada compañero recibe solo su tarea, interfaces, restricciones y criterios de aceptación.
 5. Mantén las sesiones de los compañeros existentes mientras aporten valor. No crees un agente nuevo para cada subtarea.
-6. No hagas que los agentes recorran todo el repositorio en cada asignación.
+6. No hagas que los agentes recorran todo el proyecto en cada asignación.
 7. Limita las respuestas rutinarias a resultados, bloqueos, archivos modificados y pruebas.
 8. Devuelve al Team Lead únicamente información nueva o materialmente relevante.
 9. No actives múltiples agentes para discutir problemas triviales que pueda resolver un único trabajador.
@@ -229,7 +227,7 @@ Responsabilidad exclusiva:
 - `CLAUDE.md`, `.claude/**` y scripts de automatización.
 - Integración de módulos.
 - Documentación.
-- Commits, coordinación Git y cierre de entregables.
+- Coordinación de versiones locales y cierre de entregables.
 - Control de calidad y priorización final.
 
 Puedes modificar otras zonas únicamente cuando el agente propietario haya entregado el trabajo o autorizado explícitamente el cambio.
@@ -363,8 +361,8 @@ El sistema debe:
 5. No guardar secretos, tokens, contraseñas o datos sensibles sin enmascarar.
 6. Registrar de forma diferenciada los eventos que no se hayan podido capturar.
 7. No atribuir automáticamente a un humano instrucciones redactadas por un agente.
-8. Evitar generar commits por cada evento.
-9. Permitir consolidar y versionar la bitácora al finalizar cada fase.
+8. Evitar generar un archivo por cada evento.
+9. Permitir consolidar la bitácora al finalizar cada fase.
 10. Verificar su funcionamiento con un evento real antes de considerarlo activo.
 
 Los logs deben reflejar las instrucciones efectivamente observadas; no se deben reconstruir mensajes internos desconocidos.
@@ -447,7 +445,7 @@ La política inicial propuesta es Round Robin entre accesos elegibles y FIFO den
 
 Tareas exclusivas del Team Lead:
 
-- Inspeccionar el repositorio.
+- Inspeccionar el proyecto.
 - Verificar el entorno de ejecución.
 - Mantener Windows y WSL separados para evitar rutas y dependencias inconsistentes.
 - Elegir un único entorno de desarrollo.
@@ -524,16 +522,9 @@ El evento tiene cierre oficial a las 4:00 p. m. del 30 de octubre de 2026, hora 
 
 **La funcionalidad demostrable tiene prioridad sobre las características adicionales.**
 
-## 12. Disciplina de Git y archivos
+## 12. Disciplina de cambios y archivos
 
-Trabaja sobre una rama de implementación.
-
-- No hagas force-push.
 - No borres documentación anterior.
-- No modifiques el historial de Git para reconstruir evidencia.
-- Evita cambios de rama mientras los compañeros utilizan el mismo directorio de trabajo.
-- Solo el Team Lead realiza operaciones Git que afecten a todo el equipo.
-- Los trabajadores no deben hacer commits, merges ni cambios de rama por cuenta propia.
 - Haz checkpoints de código, resultados y prompts al cerrar cada fase.
 - No incluyas archivos con credenciales ni información sensible.
 
@@ -581,7 +572,7 @@ Evita reiniciar todo el proyecto por errores localizados.
 
 Comienza inmediatamente.
 
-**Paso 1.** Inspecciona el repositorio y valida los cinco documentos existentes. No repitas análisis extensos del enunciado en tu respuesta.
+**Paso 1.** Inspecciona el proyecto y valida los cinco documentos existentes. No repitas análisis extensos del enunciado en tu respuesta.
 
 **Paso 2.** Comprueba la disponibilidad de Agent Teams, las herramientas de comunicación, los modelos Haiku y las dependencias necesarias.
 
@@ -603,7 +594,7 @@ No pidas confirmación para decisiones técnicas menores. Si encuentras un bloqu
 
 Tu primera comunicación debe ser breve e incluir:
 
-- Estado del repositorio y entorno.
+- Estado del proyecto y entorno.
 - Estrategia de implementación confirmada.
 - Disponibilidad de Agent Teams y Haiku.
 - Estado del logger.
@@ -617,4 +608,4 @@ Después, comienza la ejecución usando las herramientas.
 
 Para toda la ejecución de este plan y de los subagentes utilza las mejores skills que encuentres en el setup o con find-skills para tener el mejor resultado posible, todos los subagentes ejecutalos con caveman al maximo
 
-Utiliza la skill https://github.com/kaankiziltug/logo-design-skill.git para hacer 3 opciones de logo con el nombre parKING 1 minimalista, 1 divertida y 1 formal, enfatizando la palabra KING o el concepto KING.
+Utiliza la skill kaankiziltug/logo-design-skill para hacer 3 opciones de logo con el nombre parKING 1 minimalista, 1 divertida y 1 formal, enfatizando la palabra KING o el concepto KING.

@@ -56,7 +56,7 @@
 
   /* ---- Liquid Glass ---- */
   --glass-dark-bg: 33 45 61;
-  --glass-dark-alpha: 0.82; /* sobre el lienzo claro: texto blanco ≥ 9:1 */
+  --glass-dark-alpha: 0.9; /* sobre el lienzo claro conserva el navy del logo; texto blanco ≥ 11:1 */
   --glass-light-alpha: 0.62;
   --glass-blur: 18px;
   --glass-saturate: 165%;

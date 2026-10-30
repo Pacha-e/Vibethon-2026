@@ -39,15 +39,19 @@ function ValetChip({ valet }: { valet: Valet }) {
   return (
     <li className="flex items-center justify-between gap-2 rounded-control border border-line px-3 py-2 text-sm">
       <span className="font-medium text-fg-strong">{valet.name}</span>
-      <motion.span
-        key={valet.status}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={`whitespace-nowrap font-semibold ${label.className}`}
-      >
-        <span aria-hidden="true">{label.symbol} </span>
-        {label.text}
-      </motion.span>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={valet.status}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.18 }}
+          className={`whitespace-nowrap font-semibold ${label.className}`}
+        >
+          <span aria-hidden="true">{label.symbol} </span>
+          {label.text}
+        </motion.span>
+      </AnimatePresence>
     </li>
   );
 }
@@ -73,7 +77,7 @@ function ServiceCard({
   const waiting = canPark || canDeposit ? undefined : WAITING_TEXT[svc.stage];
 
   return (
-    <li className="space-y-2 rounded-control border border-line bg-surface-sunken p-3">
+    <div className="space-y-2 rounded-control border border-line bg-surface-sunken p-3">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span className="font-semibold text-fg-strong">
           {valet ? valet.name : svc.valetId}
@@ -105,7 +109,7 @@ function ServiceCard({
           Depositar llaves de {vehicle.plate}
         </button>
       )}
-    </li>
+    </div>
   );
 }
 
@@ -127,7 +131,7 @@ export default function ValetView() {
     <div className="space-y-6">
       <ViewHeader
         title="Valets"
-        lead="Atienda los servicios activos y siga el estado de los 16 valets."
+        lead={`Atienda los servicios activos y siga el estado de los ${state.valets.length} valets.`}
       />
 
       {notice && (
@@ -186,7 +190,7 @@ export default function ValetView() {
                   </Badge>
                 }
               >
-                <ul className="grid grid-cols-2 gap-2">
+                <ul className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
                   {list.map((v) => (
                     <ValetChip key={v.id} valet={v} />
                   ))}
@@ -203,7 +207,7 @@ export default function ValetView() {
             name="chevron"
             className="h-4 w-4 transition-transform group-open:rotate-90"
           />
-          Historial por valet (16 valets)
+          Historial por valet ({state.valets.length} valets)
         </summary>
         <div className="mt-4 space-y-6">
           <div className="overflow-x-auto">

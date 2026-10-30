@@ -7,15 +7,9 @@ import type { Command, SimState, ValetService } from "../../contracts/types";
 import { useSim } from "../../state/store";
 import { GlassSurface } from "../../components/ui/Glass";
 import { Icon } from "../../components/ui/Icon";
-import { Plate } from "../../components/ui/Plate";
 import { SPRING } from "../../components/ui/motion";
 import { fmtCOP, serviceSeq } from "./logic";
-import {
-  BTN_SECONDARY,
-  SERVICE_STAGE_TEXT,
-  TRACK_ORDER,
-  VEHICLE_STAGE_TEXT,
-} from "./labels";
+import { SERVICE_STAGE_TEXT, TRACK_ORDER, VEHICLE_STAGE_TEXT } from "./labels";
 
 type Act = (cmd: Command) => void;
 

@@ -70,7 +70,7 @@ Material en cuatro capas, no un simple `blur()`:
 | `AppNav` | `GlassNavigation`: segmentado en la barra (≥ 768 px) y dock inferior (< 768 px) |
 
 - **Sin vidrio:** mapa de celdas, pasarelas, tablas, formularios, bitácora. Su legibilidad manda.
-- **Presupuesto:** como máximo 3 superficies con desenfoque visibles a la vez (barra o dock, toast, y una de la vista).
+- **Presupuesto de desenfoque:** solo desenfocan las capas que flotan sobre el lienzo (barra o dock, toast, diálogo). Un vidrio dentro de una tarjeta opaca u otro vidrio conserva tinte, brillo, aro y sombra, pero sin `backdrop-filter` (no hay nada nuevo que refractar). Medido en Chromium: **2 superficies con desenfoque en pantalla** en las 5 vistas a 1440/1366/768 px y 2–3 a 390 px (`evidence/test-results/ui-v2-qa.txt`).
 - **`GlassTooltip`:** no se implementa: ninguna acción depende de un ícono sin texto; todos los controles tienen etiqueta visible.
 - **Alternativas:** sin soporte de `backdrop-filter` → superficie casi opaca; `prefers-reduced-transparency` o `prefers-contrast: more` → sin desenfoque ni brillos, fondo sólido.
 

@@ -23,7 +23,7 @@ export function GlassDialog({
       aria-labelledby="dialog-title"
       onCancel={(e) => { e.preventDefault(); onClose(); }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      className="m-auto w-[min(28rem,calc(100vw-2rem))] overflow-visible bg-transparent p-0 backdrop:bg-king-deep/40 backdrop:backdrop-blur-[2px]"
+      className="!m-auto w-[min(28rem,calc(100vw-2rem))] overflow-visible bg-transparent p-0 backdrop:bg-king-deep/40 backdrop:backdrop-blur-[2px]"
     >
       <AnimatePresence>
         {open && (
