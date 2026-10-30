@@ -338,7 +338,7 @@ El prompt de arranque está guardado **textualmente** en [evidence/prompts/BOOTS
 | engine-haiku | `haiku`, effort `xhigh` | [T1-ENGINE](agents/TASKS/T1-ENGINE.md) | 29 tests del motor en verde |
 | valet-haiku | `haiku`, effort `xhigh` | [T3-VALET](agents/TASKS/T3-VALET.md) | 19 tests de valet en verde |
 | ui-haiku | `haiku`, effort `xhigh` | [T2-UI](agents/TASKS/T2-UI.md) | 5 vistas sin errores de consola (Playwright) |
-| qa-haiku | `haiku`, effort `xhigh` | [T4-QA](agents/TASKS/T4-QA.md) | ver `evidence/test-results/` |
+| qa-haiku | `haiku`, effort `xhigh` | [T4-QA](agents/TASKS/T4-QA.md) | 22 pruebas propias (invariantes, 9 escenarios, flujos); suite total 70/70 |
 | logo-haiku | `haiku`, effort `xhigh` | Skill `kaankiziltug/logo-design-skill` | ver `public/brand/` |
 
 **Sustitución declarada:** esta sesión de Claude Code no ofrecía *Agent Teams* (no existía la herramienta de creación de equipos). Se usaron subagentes en segundo plano (`Agent` con `model: haiku`), la lista compartida de tareas (`TaskCreate`/`TaskUpdate`, con T4 bloqueada por T1 y T3) y `SendMessage` para continuar a un agente con su contexto. Cada agente recibió solo su cápsula, los contratos y las rutas que podía editar.
@@ -357,6 +357,15 @@ El prompt de arranque está guardado **textualmente** en [evidence/prompts/BOOTS
 4. **Corrección:** el Lead integró (quitó los montajes por vista) y reenvió a ui-haiku la tarea T2-UI-POLISH con la **regla corregida**: «Toast se monta UNA sola vez en App.tsx; ninguna vista lo importa ni renderiza», más el autocierre a 6 s y la autoselección del vehículo. La regla quedó también en la cápsula T2-UI.
 5. **Nueva ejecución:** ui-haiku completó T2-UI-POLISH sin volver a introducir `<Toast />` en las vistas (`tsc` limpio).
 6. **Prueba posterior:** [evidence/test-results/toast-single-mount.txt](../evidence/test-results/toast-single-mount.txt), con Playwright sobre la app real. Resultado: exactamente 1 aviso visible en Conductor, Portería y Simulación, 0 tras 6,5 s, autoselección del vehículo correcta y sin errores de página. Script: `evidence/test-results/toast-check.playwright.cjs`.
+
+### Segundo ciclo real: QA detecta una contradicción de contrato
+
+1. **Instrucción/contrato:** `src/contracts/types.ts` decía «si `error` existe, `state` es el de entrada». La cápsula T4-QA pedía verificar los contratos y `batch` (solicitudes simultáneas).
+2. **Esperado por QA:** un `batch` con un subcomando rechazado no cambia nada.
+3. **Fallo observado:** `tests/flows.test.ts` falló (21 pass / 1 fail; [vitest-qa.txt](../evidence/test-results/vitest-qa.txt)). `rootReduce` aplicaba el primer `valetHold` y rechazaba el segundo. qa-haiku lo reportó como `REVIEW` sin tocar código ajeno.
+4. **Corrección (decisión del Lead):** para el escenario 4, el comportamiento deseado es que **cada subcomando sea atómico**: el primero reserva el valet y el segundo recibe «no disponible». El contrato estaba mal redactado, no el motor. Se documentó la excepción en `types.ts` y `CONTRACTS.md`, y se reenvió a qa-haiku una instrucción precisa: renombrar la prueba y verificar que el aceptado se aplica, el rechazado no deja efecto, se crea exactamente 1 servicio y las invariantes se mantienen.
+5. **Nueva ejecución:** qa-haiku actualizó la prueba.
+6. **Prueba posterior:** suite completa **70 pass / 0 fail** ([vitest-final.txt](../evidence/test-results/vitest-final.txt)). El Team Lead la reejecutó por su cuenta con el mismo resultado y `tsc` limpio.
 
 ### Incidencias de agentes registradas
 
