@@ -69,11 +69,15 @@ Un Team Lead (Claude) definió los contratos y delegó en agentes Haiku: motor, 
 - Toda funcionalidad crítica debe tener escenario reproducible y prueba verificable.
 - Registrar un fallo real de prompting, el prompt corregido y la verificación posterior para la rúbrica.
 
-## Identidad visual — 3 propuestas de logo (skill `kaankiziltug/logo-design-skill`)
+## Identidad visual
+
+**Logo oficial:** el lockup entregado por el equipo (`public/brand/official/`), integrado en la cabecera y el favicon. Design system en [docs/design/DESIGN.md](docs/design/DESIGN.md) y auditoría en [docs/design/UI-UX-AUDIT.md](docs/design/UI-UX-AUDIT.md).
+
+### Exploraciones previas de agentes (no oficiales) — skill `kaankiziltug/logo-design-skill`
 
 | Minimalista (recomendado) | Divertida | Formal |
 |---|---|---|
 | ![minimal](public/brand/renders/parking-minimal.png) | ![fun](public/brand/renders/parking-fun.png) | ![formal](public/brand/renders/parking-formal.png) |
 | Corona oro sobre tile azul tinta; «par» ligera, **KING** bold | Corona inclinada y **KING** dentro de una píldora con letras oro | Escudo con anillo oro y corona; wordmark con serifas slab, tono institucional |
 
-SVG en `public/brand/` (letras construidas como trazos, sin texto vivo). El favicon y la cabecera usan `parking-icon.svg`. Nota de contraste: el oro solo va sobre azul tinta, nunca sobre blanco.
+SVG en `public/brand/` (letras construidas como trazos, sin texto vivo). Quedaron como exploración: la app usa el logo oficial.
