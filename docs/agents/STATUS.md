@@ -7,8 +7,8 @@
 | T2-UI (+POLISH) | ui-haiku | ✅ tsc limpio, 5 vistas sin errores (Playwright) | src/features/{driver,gate,sim}, src/components |
 | T3-VALET | valet-haiku | ✅ 19 tests | src/features/{valet,office} |
 | T4-QA | qa-haiku | ✅ 70/70 suite (1 REVIEW real resuelto: contrato batch) | tests/, evidence/test-results/ |
-| T5-LOGO | logo-haiku | ⏳ | public/brand/ |
+| T5-LOGO | logo-haiku | ✅ 3 conceptos + ícono, auditados y renderizados | public/brand/ |
 **Verificado por Lead:** build Vite OK; smoke de los 9 escenarios por rootReduce; E2E Playwright (llegada→celda→valet; ficho inválido rechazado, ficho válido entrega llaves); Toast único.
 **Decisiones:** Agent Teams no disponible → subagentes Haiku en background + TaskList + SendMessage. Hooks no cargados en esta sesión → exportador de transcript.
 **Riesgos:** datos oficiales ausentes (fixture provisional); estado solo en memoria.
-**Próxima acción:** integrar QA + logo, exportar prompts, commit y push.
+**Próxima acción:** ensayo de demo con el guion de la vista Simulación; sustituir fixture si llegan datos oficiales.

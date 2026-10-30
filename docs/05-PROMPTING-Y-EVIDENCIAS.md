@@ -339,7 +339,7 @@ El prompt de arranque está guardado **textualmente** en [evidence/prompts/BOOTS
 | valet-haiku | `haiku`, effort `xhigh` | [T3-VALET](agents/TASKS/T3-VALET.md) | 19 tests de valet en verde |
 | ui-haiku | `haiku`, effort `xhigh` | [T2-UI](agents/TASKS/T2-UI.md) | 5 vistas sin errores de consola (Playwright) |
 | qa-haiku | `haiku`, effort `xhigh` | [T4-QA](agents/TASKS/T4-QA.md) | 22 pruebas propias (invariantes, 9 escenarios, flujos); suite total 70/70 |
-| logo-haiku | `haiku`, effort `xhigh` | Skill `kaankiziltug/logo-design-skill` | ver `public/brand/` |
+| logo-haiku | `haiku`, effort `xhigh` | Skill `kaankiziltug/logo-design-skill` | 3 logos + ícono (svg_audit OK; render con Playwright porque render_png.py se colgaba con Chrome) |
 
 **Sustitución declarada:** esta sesión de Claude Code no ofrecía *Agent Teams* (no existía la herramienta de creación de equipos). Se usaron subagentes en segundo plano (`Agent` con `model: haiku`), la lista compartida de tareas (`TaskCreate`/`TaskUpdate`, con T4 bloqueada por T1 y T3) y `SendMessage` para continuar a un agente con su contexto. Cada agente recibió solo su cápsula, los contratos y las rutas que podía editar.
 
