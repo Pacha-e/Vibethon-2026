@@ -1,4 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { ACCESSES, ACCESS_NAME, type AccessId, type Vehicle } from '../../contracts/types';
 import { getEta } from '../../domain/engine';
 import { Badge } from '../../components/Badge';
@@ -6,6 +7,29 @@ import { EtaCard } from '../../components/EtaCard';
 import { STAGE_LABEL } from '../../components/format';
 import { useSim } from '../../state/store';
 import HireValetPanel from '../valet/HireValetPanel';
+
+/** Frase accionable según la etapa real del vehículo; null cuando su turno ya terminó. */
+function nextStep(v: Vehicle): string | null {
+  if (v.exitWithoutParking && (v.stage === 'outside' || v.stage === 'in_lane')) {
+    return 'Saldrás sin estacionar; conservas tu lugar hasta portería.';
+  }
+  switch (v.stage) {
+    case 'outside':
+      return 'Espera antes del registro: la pasarela está llena.';
+    case 'in_lane':
+      return v.cellId
+        ? `Avanza a portería cuando seas el primero: tu celda ${v.cellId} está reservada.`
+        : 'Espera en la pasarela; te avisaremos al reservar tu celda.';
+    case 'entering':
+      return v.cellId ? `Dirígete a ${v.cellId} y confirma «Ya estacioné».` : 'Dirígete a tu celda y confirma «Ya estacioné».';
+    case 'parked':
+      return v.cellId ? `Estacionado en ${v.cellId}.` : 'Estacionado.';
+    case 'exiting':
+      return 'Sal por la salida habilitada.';
+    case 'exited':
+      return null;
+  }
+}
 
 export default function DriverView() {
   const { state, dispatch } = useSim();
@@ -25,6 +49,7 @@ export default function DriverView() {
   const cell = cellId ? state.cells.find((c) => c.id === cellId) : undefined;
   const showEta = me !== null && (me.stage === 'outside' || me.stage === 'in_lane');
   const eta = me && showEta ? getEta(state, me.id) : null;
+  const step = me ? nextStep(me) : null;
 
   function onArrive(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -154,6 +179,23 @@ export default function DriverView() {
             <p className="text-base text-slate-800">Regístrese en la fila o seleccione su vehículo para ver su turno.</p>
           ) : (
             <>
+              {step && (
+                <div className="glass-dark rounded-glass p-4">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-king-gold">Siguiente paso</p>
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.p
+                      key={step}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="mt-1 text-lg font-semibold text-white"
+                    >
+                      {step}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+              )}
               <div className="flex flex-wrap items-center gap-2">
                 <Badge tone="gold">{ACCESS_NAME[me.access]}</Badge>
                 <Badge tone="neutral">Placa {me.plate}</Badge>
@@ -172,6 +214,18 @@ export default function DriverView() {
                 </p>
               )}
 
+              {eta && (eta.kind === 'estimate' || eta.kind === 'not_registered') && (
+                <div className="grid grid-cols-2 gap-3 text-center">
+                  <div className="rounded-xl bg-slate-100 p-3">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-king-royal">Posición</p>
+                    <p className="mt-1 text-4xl font-bold tabular-nums text-king-ink">{eta.position}</p>
+                  </div>
+                  <div className="rounded-xl bg-slate-100 p-3">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-king-royal">Vehículos delante</p>
+                    <p className="mt-1 text-4xl font-bold tabular-nums text-king-ink">{eta.vehiclesAhead}</p>
+                  </div>
+                </div>
+              )}
               {eta && <EtaCard eta={eta} />}
 
               {cell ? (

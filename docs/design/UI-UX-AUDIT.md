@@ -25,7 +25,7 @@
 | 5 | **Fallo de la primera versión de vidrio:** el borde con `mask-composite` pintaba el degradado sobre toda la barra y el texto blanco quedaba sin contraste | `evidence/design/glass-bug-1366.png` (vista Conductor, primera versión) | Contraste crítico | P0 | ✅ Borde translúcido + reflejos inset, sin máscaras; alfa 0.86 sobre fondo claro |
 | 6 | **Toast con texto oscuro sobre vidrio oscuro** (tras la migración a vidrio) | `evidence/design/toast-bug.png` | Contraste crítico | P0 | ✅ Texto blanco e iconos de estado aclarados |
 | 7 | En 390 px los chips de estado ocupan 2 líneas en la cabecera | `evidence/design/r-Conductor-390.png` | Menos espacio útil | P2 | Aceptado: sin scroll horizontal (overflow 0 px medido) |
-| 8 | Conductor: falta un «siguiente paso» explícito | Revisión del flujo | Comprensión inmediata | P1 | En curso (T7-VIEWS) |
+| 8 | Conductor: falta un «siguiente paso» explícito | Revisión del flujo | Comprensión inmediata | P1 | ✅ Bloque «Siguiente paso» en vidrio, animado solo cuando cambia el estado (T7-VIEWS) |
 | 9 | Variante blanca del logo: fondo con textura, no se puede extraer sin alterarla | Lámina 2 | Logo sobre fondos oscuros | P2 | Bloqueo registrado: se usa el lockup a color, que ya es claro sobre navy |
 
 ## Riesgos

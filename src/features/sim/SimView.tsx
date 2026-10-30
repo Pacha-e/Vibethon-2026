@@ -13,11 +13,13 @@ interface RunResult {
 export default function SimView() {
   const { state, dispatch } = useSim();
   const [results, setResults] = useState<Record<number, RunResult>>({});
+  const [lastRunId, setLastRunId] = useState<number | null>(null);
 
   function run(id: number, commands: Command[]) {
     dispatch({ type: 'reset' });
     const r = dispatch({ type: 'batch', commands });
     setResults((prev) => ({ ...prev, [id]: { ok: r.ok, error: r.error } }));
+    setLastRunId(id);
   }
 
   const recent = state.log.slice(-40).reverse();
@@ -64,13 +66,17 @@ export default function SimView() {
             {SCENARIOS.map((s) => {
               const res = results[s.id];
               return (
-                <li key={s.id} className="rounded-lg border border-slate-300 p-4">
+                <li
+                  key={s.id}
+                  className={`rounded-lg border-2 p-4 ${lastRunId === s.id ? 'border-king-gold' : 'border-slate-300'}`}
+                >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="font-bold text-king-ink">
                         {s.id}. {s.title}
                       </p>
                       <p className="mt-1 text-sm text-slate-800">Resultado esperado: {s.expected}</p>
+                      {lastRunId === s.id && <p className="mt-1 text-sm font-semibold text-emerald-900">Ejecutado ✓</p>}
                     </div>
                     <button type="button" className="btn btn-primary" onClick={() => run(s.id, s.commands)}>
                       Ejecutar
@@ -88,7 +94,7 @@ export default function SimView() {
         </section>
 
         <div className="space-y-6">
-          <section aria-labelledby="clock-title" className="card space-y-4">
+          <section aria-labelledby="clock-title" className="glass space-y-4 p-5">
             <h2 id="clock-title" className="text-lg font-bold text-king-ink">
               Reloj simulado
             </h2>

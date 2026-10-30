@@ -1,14 +1,12 @@
 # STATUS — checkpoint (Team Lead)
-**Fase:** D/E — integración y demo · **Cierre:** 16:00 COL
-| Tarea | Owner | Estado | Evidencia |
-|---|---|---|---|
-| T0 contratos/store/config/escenarios | Lead | ✅ | commit 1a8b226 |
-| T1-ENGINE | engine-haiku | ✅ 29 tests | src/domain/engine |
-| T2-UI (+POLISH) | ui-haiku | ✅ tsc limpio, 5 vistas sin errores (Playwright) | src/features/{driver,gate,sim}, src/components |
-| T3-VALET | valet-haiku | ✅ 19 tests | src/features/{valet,office} |
-| T4-QA | qa-haiku | ✅ 70/70 suite (1 REVIEW real resuelto: contrato batch) | tests/, evidence/test-results/ |
-| T5-LOGO | logo-haiku | ✅ 3 conceptos + ícono, auditados y renderizados | public/brand/ |
-**Verificado por Lead:** build Vite OK; smoke de los 9 escenarios por rootReduce; E2E Playwright (llegada→celda→valet; ficho inválido rechazado, ficho válido entrega llaves); Toast único.
-**Decisiones:** Agent Teams no disponible → subagentes Haiku en background + TaskList + SendMessage. Hooks no cargados en esta sesión → exportador de transcript.
-**Riesgos:** datos oficiales ausentes (fixture provisional); estado solo en memoria.
-**Próxima acción:** ensayo de demo con el guion de la vista Simulación; sustituir fixture si llegan datos oficiales.
+**Fase:** UI/UX evolución completada y mezclada en `main` · **Cierre:** 16:00 COL
+| Tarea | Owner | Estado |
+|---|---|---|
+| T1–T5 (MVP, QA, logos exploratorios) | engine/ui/valet/qa/logo-haiku | ✅ 70/70 pruebas |
+| UI-A Auditoría | Lead | ✅ docs/design/UI-UX-AUDIT.md |
+| UI-B Tokens + logo oficial + Liquid Glass nav | Lead | ✅ src/styles/tokens.css, index.css, App.tsx |
+| T6-MOTION | motion-haiku | ✅ LaneView, CellMap, Toast |
+| T7-VIEWS | refine-haiku | ✅ DriverView (siguiente paso), SimView (controles glass) |
+| QA UI final | Lead | ✅ evidence/test-results/ui-final-qa.txt |
+**Limitaciones:** variante blanca del logo no extraíble (fondo con textura); skills de diseño solicitadas no disponibles en la sesión; fixture provisional; estado en memoria.
+**Próxima acción:** ensayo de demo.

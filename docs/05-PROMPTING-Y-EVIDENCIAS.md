@@ -407,3 +407,11 @@ El prompt de arranque está guardado **textualmente** en [evidence/prompts/BOOTS
 3. **Observado:** el agente mantuvo `text-slate-900`, lo que dejó texto oscuro sobre vidrio oscuro ([toast-bug.png](../evidence/design/toast-bug.png)). La instrucción no decía que el vidrio fuera oscuro ni qué color de texto exigía. Fue una omisión del prompt.
 4. **Corrección (Lead):** texto blanco, iconos y borde de estado en tonos 300/400. La regla quedó escrita en `DESIGN.md` §Materiales: «`.glass-toast` = texto blanco».
 5. **Prueba posterior:** ver la verificación final abajo.
+
+### Verificación final de la Etapa 7
+[ui-final-qa.txt](../evidence/test-results/ui-final-qa.txt):
+- 5 vistas × 4 anchos (1440, 1366, 768 y 390 px): 0 px de overflow horizontal y 0 errores de página.
+- E2E conductor → valet → oficina correcto.
+- Toast único, legible sobre vidrio y con cierre automático a los 6 s.
+- 70/70 pruebas y `tsc` limpio.
+- Capturas finales en `evidence/design/final-*.png`.

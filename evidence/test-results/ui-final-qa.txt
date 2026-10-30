@@ -1,0 +1,13 @@
+# QA final UI — 2026-10-30T20:36:18Z
+Playwright + Chromium, npm run dev. 5 vistas × {1440,1366,768,390} px: overflow horizontal = 0 px en las 20 combinaciones; errores de página: 0.
+E2E: llegada→celda A-03→panel valet; ficho inválido rechazado; ficho LV-0008 entrega llaves.
+toasts visibles con el mensaje tras 'arrive' en Conductor: 1
+vehículo autoseleccionado: true
+Portería: toasts con mensaje = 1
+Simulación: toasts con mensaje = 1
+tras 6.5 s: toasts con mensaje = 0
+errores de página: []
+
+ Test Files  5 passed (5)
+      Tests  70 passed (70)
+tsc: OK
