@@ -9,6 +9,7 @@ import { Panel, ViewHeader } from "../../components/ui/Panel";
 import { Plate } from "../../components/ui/Plate";
 import { Icon } from "../../components/ui/Icon";
 import { SPRING_SOFT } from "../../components/ui/motion";
+import { KeyTicket } from "../../components/KeyTicket";
 
 import { serviceSeq } from "../valet/logic";
 
@@ -20,15 +21,18 @@ const KIND_TEXT: Record<OfficeRecord["kind"], string> = {
 export default function OfficeView() {
   const { state, dispatch } = useSim();
   const [code, setCode] = useState("");
-  const [result, setResult] = useState<{ ok: boolean; text: string } | null>(
-    null,
-  );
+  const [result, setResult] = useState<{
+    ok: boolean;
+    text: string;
+    serviceId?: string;
+  } | null>(null);
 
   // Las llaves en custodia no muestran el ficho: el ficho es la credencial para reclamarlas.
   const custody = Object.values(state.services)
     .filter((s) => s.stage === "keys_deposited")
     .sort((a, b) => serviceSeq(a.id) - serviceSeq(b.id));
   const records = [...state.office].reverse();
+  const claimed = result?.serviceId ? state.services[result.serviceId] : undefined;
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,6 +41,7 @@ export default function OfficeView() {
       setResult({
         ok: true,
         text: r.events.map((ev) => ev.message).join(" · "),
+        serviceId: r.events.find((ev) => ev.serviceId)?.serviceId,
       });
       setCode("");
     } else {
@@ -109,6 +114,20 @@ export default function OfficeView() {
               />
               {result.text}
             </motion.p>
+          )}
+          {result?.ok && claimed?.ticketCode && (
+            <div className="mt-4">
+              <KeyTicket
+                key={claimed.ticketCode}
+                code={claimed.ticketCode}
+                plate={state.vehicles[claimed.vehicleId]?.plate ?? claimed.vehicleId}
+                accessName={ACCESS_NAME[claimed.access]}
+                cellId={claimed.cellId}
+                valetName={state.valets.find((v) => v.id === claimed.valetId)?.name ?? null}
+                status="delivered"
+                tear
+              />
+            </div>
           )}
         </Panel>
 

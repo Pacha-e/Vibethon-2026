@@ -5,7 +5,7 @@ import { getEta } from "../../domain/engine";
 import { ACCESS_NAME } from "../../contracts/types";
 import type { Command, SimState, ValetService } from "../../contracts/types";
 import { useSim } from "../../state/store";
-import { GlassSurface } from "../../components/ui/Glass";
+import { KeyTicket } from "../../components/KeyTicket";
 import { Icon } from "../../components/ui/Icon";
 import { SPRING } from "../../components/ui/motion";
 import { fmtCOP, serviceSeq } from "./logic";
@@ -142,22 +142,20 @@ function TrackBlock({
       )}
 
       {svc.ticketCode && (
-        <motion.div
-          key={svc.ticketCode}
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={SPRING}
-        >
-          <GlassSurface tone="dark" className="on-dark p-5 text-center">
-            <p className="text-sm text-white/80">
-              Ficho para reclamar sus llaves
-            </p>
-            <p className="mt-1 flex items-center justify-center gap-2 font-display text-3xl font-bold tracking-[0.2em] text-king-gold">
-              <Icon name="ticket" className="h-6 w-6" />
-              {svc.ticketCode}
-            </p>
-          </GlassSurface>
-        </motion.div>
+        <KeyTicket
+          code={svc.ticketCode}
+          plate={vehicle.plate}
+          accessName={ACCESS_NAME[svc.access]}
+          cellId={cell}
+          valetName={valet?.name ?? null}
+          status={
+            svc.stage === "keys_delivered"
+              ? "delivered"
+              : svc.stage === "keys_deposited"
+                ? "ready"
+                : "issued"
+          }
+        />
       )}
 
       {TRACK_DETAIL[svc.stage] && (

@@ -16,7 +16,16 @@ npm run dev
 
 Abrir http://127.0.0.1:5173. Pruebas: `npm test`. Build: `npm run build`.
 
-Al abrir, la app pide un **correo institucional `@eafit.edu.co`** (cualquier otro dominio se rechaza). Es una puerta de acceso de la demo local: el correo se guarda solo en este navegador (`localStorage`) y no se envía a ningún servidor; **no** es autenticación real. «Salir» en la barra cierra la sesión.
+Al abrir, la app pide un **correo institucional `@eafit.edu.co`** (cualquier otro dominio se rechaza). Cada pestaña tiene su propia sesión y todas operan **el mismo parqueadero** (el estado se comparte entre pestañas del navegador):
+
+| Cuenta | Ve |
+|---|---|
+| Cualquier `@eafit.edu.co` | **Conductor**: solo los vehículos registrados con esa cuenta |
+| `porteria@eafit.edu.co` | Portería + Simulación |
+| `valet@eafit.edu.co` | Valet + Simulación |
+| `oficina@eafit.edu.co` | Oficina + Simulación |
+
+Atajo de demo: `http://127.0.0.1:5173/?correo=porteria@eafit.edu.co` abre la pestaña con esa cuenta. Es una puerta de acceso de la demo local: **no** es autenticación real (sin contraseña ni servidor). «Salir» cierra la sesión de esa pestaña; «Simulación → Reiniciar» reinicia el parqueadero para todas.
 
 ## Vistas (una sola app local, una sola fuente de verdad)
 

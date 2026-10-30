@@ -110,6 +110,7 @@ function arrive(state: SimState, cmd: Cmd<'arrive'>): Result {
   const vehicle: Vehicle = {
     id, plate, driver: cmd.driver.trim(), access: cmd.access, stage: 'outside', arrivedAt: withSeq.now,
     registeredAt: null, cellId: null, exitWithoutParking: false, valetServiceId: null, reassignments: 0, notice: null,
+    owner: cmd.owner ?? null,
   };
   const next: SimState = {
     ...withSeq,
