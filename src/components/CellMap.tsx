@@ -1,19 +1,47 @@
-import { AnimatePresence, motion } from 'motion/react';
-import type { Cell, CellStatus, Vehicle } from '../contracts/types';
+import { AnimatePresence, motion } from "motion/react";
+import type { Cell, CellStatus, Vehicle } from "../contracts/types";
+import { Plate } from "./ui/Plate";
+import { SPRING_SOFT } from "./ui/motion";
 
-const LOOK: Record<CellStatus, string> = {
-  free: 'border-emerald-700 bg-emerald-50',
-  reserved: 'border-amber-600 bg-amber-100',
-  occupied: 'border-red-700 bg-red-50',
+// Tinte + borde + texto «ink» del estado; el texto siempre acompaña al color.
+const LOOK: Record<
+  CellStatus,
+  { tile: string; ink: string; ring: string; symbol: string; word: string }
+> = {
+  free: {
+    tile: "bg-state-free-tint border-state-free/35",
+    ink: "text-state-free-ink",
+    ring: "ring-state-free",
+    symbol: "○",
+    word: "Libre",
+  },
+  reserved: {
+    tile: "bg-state-reserved-tint border-state-reserved/45",
+    ink: "text-state-reserved-ink",
+    ring: "ring-state-reserved",
+    symbol: "◐",
+    word: "Reservada",
+  },
+  occupied: {
+    tile: "bg-state-occupied-tint border-state-occupied/35",
+    ink: "text-state-occupied-ink",
+    ring: "ring-state-occupied",
+    symbol: "●",
+    word: "Ocupada",
+  },
 };
 
 /** Texto + símbolo de la celda (nunca solo color). */
-export function cellText(cell: Cell, vehicles: Record<string, Vehicle>): string {
-  if (cell.status === 'free') return '○ Libre';
+export function cellText(
+  cell: Cell,
+  vehicles: Record<string, Vehicle>,
+): string {
+  if (cell.status === "free") return "○ Libre";
   const plate = cell.vehicleId ? vehicles[cell.vehicleId]?.plate : undefined;
-  if (cell.status === 'reserved') return plate ? `◐ Reservada · ${plate}` : '◐ Reservada';
-  if (cell.vehicleId === null) return '● Ocupada (no registrado)';
-  return plate ? `● Ocupada · ${plate}` : '● Ocupada';
+  if (cell.status === "reserved")
+    return plate ? `◐ Reservada · ${plate}` : "◐ Reservada";
+  if (cell.vehicleId === null) return "● Ocupada (no registrado)";
+  return plate ? `● Ocupada · ${plate}` : "● Ocupada";
 }
 
 function groupByZone(cells: Cell[]): [string, Cell[]][] {
@@ -35,51 +63,99 @@ export interface CellMapProps {
   actionLabel?: (cell: Cell) => string | null;
 }
 
-export function CellMap({ cells, vehicles, highlightId, onCellAction, actionLabel }: CellMapProps) {
+export function CellMap({
+  cells,
+  vehicles,
+  highlightId,
+  onCellAction,
+  actionLabel,
+}: CellMapProps) {
   const zones = groupByZone(cells);
-  if (zones.length === 0) return <p className="text-base text-slate-800">No hay celdas configuradas.</p>;
+  if (zones.length === 0)
+    return (
+      <p className="text-base text-fg-muted">No hay celdas configuradas.</p>
+    );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {zones.map(([zone, list]) => (
         <section key={zone} aria-label={`Zona ${zone}`}>
-          <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-king-royal">Zona {zone}</h3>
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <h3 className="mb-2 text-sm font-semibold text-fg-strong">
+            Zona {zone}
+          </h3>
+          <ul className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-2">
             {list.map((cell) => {
+              const look = LOOK[cell.status];
               const mine = cell.id === highlightId;
-              const label = onCellAction ? (actionLabel ? actionLabel(cell) : 'Acción') : null;
+              const label = onCellAction
+                ? actionLabel
+                  ? actionLabel(cell)
+                  : "Acción"
+                : null;
+              const plate = cell.vehicleId
+                ? vehicles[cell.vehicleId]?.plate
+                : undefined;
               return (
-                <li key={cell.id} aria-current={mine ? 'true' : undefined}>
-                  <motion.div
-                    layout
-                    className={`relative flex h-full flex-col rounded-lg border-2 p-3 text-king-ink ${LOOK[cell.status]} ${
-                      mine ? 'ring-4 ring-king-gold ring-offset-2' : ''
+                <li key={cell.id} aria-current={mine ? "true" : undefined}>
+                  <div
+                    className={`relative flex h-full flex-col gap-1 rounded-control border p-2.5 transition-colors duration-300 ${look.tile} ${
+                      mine
+                        ? "ring-[3px] ring-king-goldlogo ring-offset-2 ring-offset-surface-card"
+                        : ""
                     }`}
                   >
-                    {/* Pulso solo al cambiar estado o vehículo. initial={false} evita pulsar en el montaje. */}
+                    {/* Pulso solo al cambiar estado o dueño; initial={false} evita pulsar al montar. */}
                     <AnimatePresence initial={false}>
                       <motion.span
-                        key={cell.id + cell.status + (cell.vehicleId ?? '')}
+                        key={cell.id + cell.status + (cell.vehicleId ?? "")}
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 rounded-lg ring-4 ring-king-royal"
-                        initial={{ opacity: 0.9, scale: 0.96 }}
-                        animate={{ opacity: 0, scale: 1.04 }}
-                        transition={{ duration: 0.9 }}
+                        className={`pointer-events-none absolute -inset-px rounded-control ring-[3px] ${look.ring}`}
+                        initial={{ opacity: 0.85, scale: 0.94 }}
+                        animate={{ opacity: 0, scale: 1.06 }}
+                        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                       />
                     </AnimatePresence>
-                    <p className="text-base font-bold">{cell.id}</p>
-                    <p className="text-sm font-semibold">{cellText(cell, vehicles)}</p>
-                    {mine && <p className="mt-1 text-sm font-bold">★ Su celda</p>}
+                    <div className="flex items-baseline justify-between gap-2">
+                      <p className="font-display text-base font-bold text-fg-strong">
+                        {cell.id}
+                      </p>
+                      {mine && (
+                        <span className="text-xs font-bold text-king-ink">
+                          ★ Su celda
+                        </span>
+                      )}
+                    </div>
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.p
+                        key={cell.status + (cell.vehicleId ?? "")}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={SPRING_SOFT}
+                        className={`flex flex-wrap items-center gap-1.5 text-sm font-semibold ${look.ink}`}
+                      >
+                        <span aria-hidden="true">{look.symbol}</span>
+                        {look.word}
+                        {plate ? (
+                          <Plate className="text-[0.8rem]">{plate}</Plate>
+                        ) : (
+                          cell.status === "occupied" && (
+                            <span className="font-normal">sin registro</span>
+                          )
+                        )}
+                      </motion.p>
+                    </AnimatePresence>
                     {onCellAction && label && (
                       <button
                         type="button"
                         onClick={() => onCellAction(cell)}
-                        className="btn btn-secondary mt-3 w-full text-sm"
+                        aria-label={`${label}, celda ${cell.id}`}
+                        className="btn btn-ghost btn-sm mt-auto min-h-[2.75rem] justify-start px-2 text-sm underline decoration-from-font underline-offset-2"
                       >
                         {label}
                       </button>
                     )}
-                  </motion.div>
+                  </div>
                 </li>
               );
             })}
