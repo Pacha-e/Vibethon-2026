@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'motion/react';
 import type { Cell, CellStatus, Vehicle } from '../contracts/types';
 
 const LOOK: Record<CellStatus, string> = {
@@ -48,25 +49,37 @@ export function CellMap({ cells, vehicles, highlightId, onCellAction, actionLabe
               const mine = cell.id === highlightId;
               const label = onCellAction ? (actionLabel ? actionLabel(cell) : 'Acción') : null;
               return (
-                <li
-                  key={cell.id}
-                  aria-current={mine ? 'true' : undefined}
-                  className={`flex flex-col rounded-lg border-2 p-3 text-king-ink ${LOOK[cell.status]} ${
-                    mine ? 'ring-4 ring-king-gold ring-offset-2' : ''
-                  }`}
-                >
-                  <p className="text-base font-bold">{cell.id}</p>
-                  <p className="text-sm font-semibold">{cellText(cell, vehicles)}</p>
-                  {mine && <p className="mt-1 text-sm font-bold">★ Su celda</p>}
-                  {onCellAction && label && (
-                    <button
-                      type="button"
-                      onClick={() => onCellAction(cell)}
-                      className="btn btn-secondary mt-3 w-full text-sm"
-                    >
-                      {label}
-                    </button>
-                  )}
+                <li key={cell.id} aria-current={mine ? 'true' : undefined}>
+                  <motion.div
+                    layout
+                    className={`relative flex h-full flex-col rounded-lg border-2 p-3 text-king-ink ${LOOK[cell.status]} ${
+                      mine ? 'ring-4 ring-king-gold ring-offset-2' : ''
+                    }`}
+                  >
+                    {/* Pulso solo al cambiar estado o vehículo. initial={false} evita pulsar en el montaje. */}
+                    <AnimatePresence initial={false}>
+                      <motion.span
+                        key={cell.id + cell.status + (cell.vehicleId ?? '')}
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 rounded-lg ring-4 ring-king-royal"
+                        initial={{ opacity: 0.9, scale: 0.96 }}
+                        animate={{ opacity: 0, scale: 1.04 }}
+                        transition={{ duration: 0.9 }}
+                      />
+                    </AnimatePresence>
+                    <p className="text-base font-bold">{cell.id}</p>
+                    <p className="text-sm font-semibold">{cellText(cell, vehicles)}</p>
+                    {mine && <p className="mt-1 text-sm font-bold">★ Su celda</p>}
+                    {onCellAction && label && (
+                      <button
+                        type="button"
+                        onClick={() => onCellAction(cell)}
+                        className="btn btn-secondary mt-3 w-full text-sm"
+                      >
+                        {label}
+                      </button>
+                    )}
+                  </motion.div>
                 </li>
               );
             })}

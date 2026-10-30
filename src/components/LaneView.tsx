@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'motion/react';
 import type { AccessId, Vehicle } from '../contracts/types';
 import { ACCESS_NAME } from '../contracts/types';
 import { Badge } from './Badge';
@@ -13,6 +14,12 @@ export interface LaneViewProps {
   view: LaneData;
   highlightId?: string | null;
 }
+
+// Solo transform/opacity. reducedMotion lo resuelve MotionConfig en App.
+const ENTER = { opacity: 0, y: 12 };
+const SHOW = { opacity: 1, y: 0 };
+const LEAVE = { opacity: 0, y: -16 };
+const SPRING = { type: 'spring', stiffness: 420, damping: 34 } as const;
 
 /** Pasarela (índice 0 junto a portería, arriba) y fila exterior de un acceso. */
 export function LaneView({ access, view, highlightId }: LaneViewProps) {
@@ -43,28 +50,35 @@ export function LaneView({ access, view, highlightId }: LaneViewProps) {
       </div>
 
       <ol aria-label={`Pasarela ${name}, el primer hueco está junto a portería`} className="space-y-2">
-        {slots.map((v, i) =>
-          v ? (
-            <li
-              key={v.id}
-              className={`rounded-lg border-2 p-3 ${
-                v.id === highlightId ? 'border-king-gold bg-king-gold/20 ring-2 ring-king-gold' : 'border-king-royal bg-blue-50'
-              }`}
-            >
-              <p className="font-bold text-king-ink">
-                {v.plate} <span className="font-normal">· {v.driver}</span>
-              </p>
-              <p className="text-sm text-slate-900">
-                {v.cellId ? `Celda ${v.cellId}` : 'Esperando celda'}
-                {v.id === highlightId ? ' · ★ Su vehículo' : ''}
-              </p>
-            </li>
-          ) : (
-            <li key={`hueco-${i}`} className="rounded-lg border-2 border-dashed border-slate-500 p-3 text-sm text-slate-900">
-              ○ Hueco libre {i + 1}
-            </li>
-          ),
-        )}
+        <AnimatePresence initial={false}>
+          {slots.map((v, i) =>
+            v ? (
+              <motion.li
+                key={v.id}
+                layout
+                initial={ENTER}
+                animate={SHOW}
+                exit={LEAVE}
+                transition={SPRING}
+                className={`rounded-lg border-2 p-3 ${
+                  v.id === highlightId ? 'border-king-gold bg-king-gold/20 ring-2 ring-king-gold' : 'border-king-royal bg-blue-50'
+                }`}
+              >
+                <p className="font-bold text-king-ink">
+                  {v.plate} <span className="font-normal">· {v.driver}</span>
+                </p>
+                <p className="text-sm text-slate-900">
+                  {v.cellId ? `Celda ${v.cellId}` : 'Esperando celda'}
+                  {v.id === highlightId ? ' · ★ Su vehículo' : ''}
+                </p>
+              </motion.li>
+            ) : (
+              <li key={`hueco-${i}`} className="rounded-lg border-2 border-dashed border-slate-500 p-3 text-sm text-slate-900">
+                ○ Hueco libre {i + 1}
+              </li>
+            ),
+          )}
+        </AnimatePresence>
       </ol>
 
       <div>
@@ -73,17 +87,24 @@ export function LaneView({ access, view, highlightId }: LaneViewProps) {
           <p className="mt-1 text-sm text-slate-900">Nadie espera fuera.</p>
         ) : (
           <ol className="mt-2 divide-y divide-slate-200 rounded-lg border border-slate-200 text-sm">
-            {outside.map((v, i) => (
-              <li
-                key={v.id}
-                className={`flex justify-between gap-3 px-3 py-2 ${v.id === highlightId ? 'bg-king-gold/20 font-bold' : ''}`}
-              >
-                <span>
-                  {i + 1}. {v.plate}
-                </span>
-                <span className="text-slate-900">{v.driver}</span>
-              </li>
-            ))}
+            <AnimatePresence initial={false}>
+              {outside.map((v, i) => (
+                <motion.li
+                  key={v.id}
+                  layout
+                  initial={ENTER}
+                  animate={SHOW}
+                  exit={LEAVE}
+                  transition={SPRING}
+                  className={`flex justify-between gap-3 px-3 py-2 ${v.id === highlightId ? 'bg-king-gold/20 font-bold' : ''}`}
+                >
+                  <span>
+                    {i + 1}. {v.plate}
+                  </span>
+                  <span className="text-slate-900">{v.driver}</span>
+                </motion.li>
+              ))}
+            </AnimatePresence>
           </ol>
         )}
       </div>

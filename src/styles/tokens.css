@@ -1,0 +1,42 @@
+/* parKING — design tokens. Fuente de verdad de color: logo oficial (public/brand/official/).
+   Azul tinta #212D3D y oro #A98E4C muestreados del lockup a color; el resto son derivaciones
+   tonales del mismo matiz (ver docs/design/DESIGN.md). Formato "R G B" para alpha en Tailwind. */
+:root {
+  /* Marca (logo) */
+  --brand-navy: 33 45 61;         /* #212D3D — fondo del lockup */
+  --brand-navy-900: 22 30 41;     /* #161E29 — derivado, más profundo */
+  --brand-navy-700: 52 69 94;     /* #34455E — derivado, botones primarios (blanco 9.7:1) */
+  --brand-gold: 169 142 76;       /* #A98E4C — "KING" y corona */
+  --brand-gold-300: 201 175 110;  /* #C9AF6E — derivado: rellenos/realces sobre navy (6.2:1 con navy) */
+  --brand-ink-on-gold: 33 45 61;
+
+  /* Semánticos de estado (extensión justificada: el logo no define estados) */
+  --state-free: 4 120 87;         /* emerald-700 — texto blanco 5.5:1 */
+  --state-reserved: 180 83 9;     /* amber-700 — texto blanco 5.0:1 */
+  --state-occupied: 190 18 60;    /* rose-700 — texto blanco 6.4:1 */
+  --state-info: 52 69 94;
+
+  /* Superficies */
+  --surface-app: 241 243 246;
+  --surface-card: 255 255 255;
+  --text-strong: 22 30 41;
+  --text-muted: 71 85 105;        /* slate-600 sobre blanco 7.6:1 */
+
+  /* Liquid Glass */
+  --glass-dark-bg: 33 45 61;
+  --glass-dark-alpha: 0.86;  /* sobre fondo claro: garantiza blanco ≥ 9:1 sin perder la translucidez */
+  --glass-light-alpha: 0.66;
+  --glass-blur: 18px;
+  --glass-saturate: 160%;
+  --glass-edge: 255 255 255;
+  --glass-shadow: 0 1px 0 0 rgb(255 255 255 / 0.12) inset, 0 -1px 0 0 rgb(0 0 0 / 0.18) inset,
+    0 10px 30px -12px rgb(var(--brand-navy-900) / 0.45);
+
+  /* Forma y movimiento */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+}
