@@ -1,93 +1,182 @@
-import { useState } from 'react';
-import { AnimatePresence, MotionConfig, motion } from 'motion/react';
-import { useSim } from './state/store';
-import { cellCounts } from './domain/engine';
-import { fmtMin } from './contracts/util';
-import DriverView from './features/driver/DriverView';
-import GateView from './features/gate/GateView';
-import ValetView from './features/valet/ValetView';
-import OfficeView from './features/office/OfficeView';
-import SimView from './features/sim/SimView';
-import { Toast } from './components/Toast';
+import { useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { useSim } from "./state/store";
+import { cellCounts } from "./domain/engine";
+import { clock } from "./components/format";
+import DriverView from "./features/driver/DriverView";
+import GateView from "./features/gate/GateView";
+import ValetView from "./features/valet/ValetView";
+import OfficeView from "./features/office/OfficeView";
+import SimView from "./features/sim/SimView";
+import { Toast } from "./components/Toast";
+import { AppNav, tabId, type NavTab } from "./components/AppNav";
+import { AnimatedNumber } from "./components/ui/AnimatedNumber";
+import { Icon } from "./components/ui/Icon";
+import { EASE_OUT } from "./components/ui/motion";
 
-const TABS = [
-  { id: 'driver', label: 'Conductor', icon: '🚗', View: DriverView },
-  { id: 'gate', label: 'Portería', icon: '🚧', View: GateView },
-  { id: 'valet', label: 'Valet', icon: '🔑', View: ValetView },
-  { id: 'office', label: 'Oficina', icon: '🏢', View: OfficeView },
-  { id: 'sim', label: 'Simulación', icon: '🧪', View: SimView },
-] as const;
-type TabId = (typeof TABS)[number]['id'];
+type TabId = "driver" | "gate" | "valet" | "office" | "sim";
 
-const spring = { type: 'spring', stiffness: 480, damping: 38 } as const;
+const TABS: readonly NavTab<TabId>[] = [
+  { id: "driver", label: "Conductor", icon: "car" },
+  { id: "gate", label: "Portería", icon: "gate" },
+  { id: "valet", label: "Valet", icon: "key" },
+  { id: "office", label: "Oficina", icon: "office" },
+  { id: "sim", label: "Simulación", icon: "flask" },
+];
 
-function CountChip({ symbol, label, value, tone }: { symbol: string; label: string; value: number; tone: string }) {
+const VIEWS: Record<TabId, () => JSX.Element> = {
+  driver: DriverView,
+  gate: GateView,
+  valet: ValetView,
+  office: OfficeView,
+  sim: SimView,
+};
+
+/** Inventario global: símbolo + número + palabra (nunca solo color). */
+function Inventory() {
+  const { state } = useSim();
+  const c = cellCounts(state);
+  const items = [
+    { symbol: "○", value: c.free, label: "libres", dot: "bg-state-free" },
+    {
+      symbol: "◐",
+      value: c.reserved,
+      label: "reservadas",
+      dot: "bg-state-reserved",
+    },
+    {
+      symbol: "●",
+      value: c.occupied,
+      label: "ocupadas",
+      dot: "bg-state-occupied",
+    },
+  ];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold text-white ${tone}`}>
-      <span aria-hidden>{symbol}</span>
-      <motion.span key={value} initial={{ y: -6, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={spring} className="tabular-nums">
-        {value}
-      </motion.span>
-      {label}
+    <div
+      role="status"
+      aria-label="Inventario de celdas"
+      className="flex items-center gap-1.5"
+    >
+      {items.map((i) => (
+        <span
+          key={i.label}
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] py-1 pl-1.5 pr-2.5 text-sm text-white ring-1 ring-inset ring-white/10"
+        >
+          <span
+            aria-hidden="true"
+            className={`grid h-5 w-5 place-items-center rounded-full text-[0.7rem] text-white ${i.dot}`}
+          >
+            {i.symbol}
+          </span>
+          <AnimatedNumber value={i.value} className="font-display font-bold" />
+          <span className="text-white/80">{i.label}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function SimClock() {
+  const { state } = useSim();
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] px-2.5 py-1 text-sm text-white ring-1 ring-inset ring-white/10">
+      <Icon name="clock" className="h-4 w-4 text-king-gold" />
+      <span className="sr-only">Reloj simulado</span>
+      <AnimatedNumber
+        value={clock(state.now)}
+        className="font-display font-bold"
+      />
     </span>
   );
 }
 
 export default function App() {
-  const [tab, setTab] = useState<TabId>('driver');
+  const [tab, setTab] = useState<TabId>("driver");
   const { state } = useSim();
-  const counts = cellCounts(state);
-  const Active = TABS.find((t) => t.id === tab)!.View;
+  const Active = VIEWS[tab];
+
   return (
     <MotionConfig reducedMotion="user">
-      <div className="app-backdrop min-h-screen">
-        <header className="sticky top-0 z-30 px-2 pt-2 sm:px-4">
-          <div className="glass-dark mx-auto max-w-7xl px-3 pb-2 pt-3 sm:px-5">
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              <h1 className="m-0 shrink-0">
-                <img src="/brand/official/parking-logo-color.png" alt="parKING — Universidad EAFIT" className="h-10 w-auto sm:h-12" width={530} height={238} />
-              </h1>
-              <div className="ml-auto flex flex-wrap items-center gap-2" aria-label="Resumen de celdas" role="status">
-                <CountChip symbol="○" label="libres" value={counts.free} tone="bg-state-free" />
-                <CountChip symbol="◐" label="reservadas" value={counts.reserved} tone="bg-state-reserved" />
-                <CountChip symbol="●" label="ocupadas" value={counts.occupied} tone="bg-state-occupied" />
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-sm text-white">
-                  <span aria-hidden>⏱</span> Reloj simulado <span className="tabular-nums font-semibold">{fmtMin(state.now)}</span>
-                </span>
-              </div>
-            </div>
-            <nav className="-mx-1 mt-3 flex gap-1 overflow-x-auto pb-1" role="tablist" aria-label="Vistas por rol">
-              {TABS.map((t) => {
-                const active = tab === t.id;
-                return (
-                  <button
-                    key={t.id}
-                    role="tab"
-                    aria-selected={active}
-                    aria-controls="vista"
-                    onClick={() => setTab(t.id)}
-                    className={`relative min-h-[2.75rem] shrink-0 rounded-full px-4 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-king-gold ${active ? 'text-king-ink' : 'text-white/85 hover:text-white'}`}
-                  >
-                    {active && <motion.span layoutId="tab-pill" transition={spring} className="absolute inset-0 rounded-full bg-king-gold shadow-md" aria-hidden />}
-                    <span className="relative"><span aria-hidden>{t.icon}</span> {t.label}</span>
-                  </button>
-                );
-              })}
+      <div className="app-backdrop min-h-screen pb-[calc(var(--dock-h)+env(safe-area-inset-bottom)+1.5rem)] md:pb-10">
+        <a
+          href="#vista"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-control focus:bg-surface-card focus:px-4 focus:py-2 focus:font-semibold focus:shadow-e2"
+        >
+          Saltar al contenido
+        </a>
+
+        {/* Barra superior. En móvil no es fija: la navegación vive en el dock inferior. */}
+        <header className="z-30 px-2 pt-2 sm:px-4 md:sticky md:top-0">
+          <div className="glass-dark on-dark mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2.5 px-3 py-2.5 sm:px-4">
+            <h1 className="m-0 shrink-0 pr-1">
+              <img
+                src="/brand/official/parking-logo-color.png"
+                alt="parKING — Universidad EAFIT"
+                width={530}
+                height={238}
+                className="h-9 w-auto sm:h-10 xl:h-11"
+              />
+            </h1>
+            <nav
+              aria-label="Principal"
+              className="order-last hidden w-full md:block xl:order-none xl:w-auto"
+            >
+              <AppNav
+                tabs={TABS}
+                active={tab}
+                onChange={setTab}
+                variant="bar"
+              />
             </nav>
+            <div className="ml-auto flex flex-wrap items-center justify-end gap-1.5">
+              <div className="hidden sm:block">
+                <Inventory />
+              </div>
+              <SimClock />
+            </div>
+            <div className="w-full sm:hidden">
+              <Inventory />
+            </div>
           </div>
         </header>
-        {!state.config.isOfficial && (
-          <p className="mx-auto max-w-7xl px-4 pt-3 text-xs text-slate-600">
-            Datos de simulación: <strong>{state.config.fixtureName}</strong> — fixture provisional del equipo (los mapas/eventos oficiales se cargan con el mismo formato).
-          </p>
-        )}
-        <main id="vista" role="tabpanel" className="mx-auto max-w-7xl px-3 py-4 sm:px-4">
+
+        <main
+          id="vista"
+          role="tabpanel"
+          aria-labelledby={tabId("bar", tab)}
+          tabIndex={-1}
+          className="mx-auto max-w-7xl px-3 pt-5 focus:outline-none sm:px-6 sm:pt-8"
+        >
+          {!state.config.isOfficial && (
+            <p className="mb-4 text-xs text-fg-muted">
+              Datos de simulación:{" "}
+              <strong className="font-semibold text-fg-body">
+                {state.config.fixtureName}
+              </strong>
+              , fixture provisional del equipo. Los mapas y eventos oficiales se
+              cargan con el mismo formato.
+            </p>
+          )}
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}>
+            <motion.div
+              key={tab}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18, ease: EASE_OUT }}
+            >
               <Active />
             </motion.div>
           </AnimatePresence>
         </main>
+
+        <nav
+          aria-label="Principal"
+          className="glass-dark on-dark fixed inset-x-2 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-30 p-1.5 md:hidden"
+        >
+          <AppNav tabs={TABS} active={tab} onChange={setTab} variant="dock" />
+        </nav>
+
         <Toast />
       </div>
     </MotionConfig>

@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { useSim } from '../state/store';
+import { useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useSim } from "../state/store";
+import { Icon } from "./ui/Icon";
+import { SPRING } from "./ui/motion";
 
-const SPRING = { type: 'spring', stiffness: 420, damping: 34 } as const;
-
+/** Confirmación del motor: solo aparece después de que rootReduce aplicó (o rechazó) el comando. */
 export function Toast() {
   const { feedback, clearFeedback } = useSim();
   // Ref: un re-render del store no reinicia el temporizador.
@@ -17,42 +18,41 @@ export function Toast() {
     return () => window.clearTimeout(t);
   }, [feedback]);
 
-  const isError = feedback?.kind === 'error';
+  const isError = feedback?.kind === "error";
 
   return (
     <div
       aria-live="polite"
       aria-atomic="true"
-      className="pointer-events-none fixed bottom-4 left-4 right-4 z-50 flex justify-center sm:bottom-6 sm:left-auto sm:right-6 sm:justify-end"
+      className="pointer-events-none fixed inset-x-3 z-40 flex justify-center bottom-[calc(var(--dock-h)+env(safe-area-inset-bottom)+1.25rem)] md:inset-x-auto md:bottom-6 md:right-6 md:justify-end"
     >
       <AnimatePresence>
         {feedback && (
           <motion.div
-            key="toast"
-            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+            key={feedback.id}
+            layout
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={SPRING}
-            className={`glass-toast pointer-events-auto flex max-w-md items-start gap-3 rounded-xl border-l-4 px-4 py-3 text-white shadow-lg ${
-              isError ? 'border-rose-400' : 'border-emerald-400'
-            }`}
+            className="glass-dark pointer-events-auto flex w-full max-w-md items-start gap-3 py-3 pl-3 pr-2"
           >
             <span
-              aria-hidden="true"
-              className={`text-lg font-bold leading-6 ${isError ? 'text-rose-300' : 'text-emerald-300'}`}
+              className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full text-white ${isError ? "bg-state-occupied" : "bg-state-free"}`}
             >
-              {isError ? '✕' : '✓'}
+              <Icon name={isError ? "x" : "check"} className="h-4 w-4" />
             </span>
-            <p className="text-sm font-medium leading-6">
-              {isError ? 'Error: ' : ''}
+            <p className="flex-1 py-0.5 text-sm font-medium leading-6 text-white">
+              <span className="sr-only">{isError ? "Error: " : "Hecho: "}</span>
               {feedback.text}
             </p>
             <button
               type="button"
               onClick={clearFeedback}
-              className="shrink-0 rounded-md px-2 py-1 text-sm font-semibold underline underline-offset-2 hover:bg-white/10 focus-visible:outline-king-gold"
+              aria-label="Cerrar aviso"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             >
-              Cerrar
+              <Icon name="x" className="h-4 w-4" />
             </button>
           </motion.div>
         )}

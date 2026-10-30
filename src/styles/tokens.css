@@ -1,42 +1,77 @@
-/* parKING — design tokens. Fuente de verdad de color: logo oficial (public/brand/official/).
-   Azul tinta #212D3D y oro #A98E4C muestreados del lockup a color; el resto son derivaciones
-   tonales del mismo matiz (ver docs/design/DESIGN.md). Formato "R G B" para alpha en Tailwind. */
+/* parKING — design tokens (fuente única; ver docs/design/DESIGN.md).
+   Color de marca muestreado del logo oficial (public/brand/official/): azul tinta #212D3D y oro #A98E4C.
+   Todo lo demás se deriva de esos dos matices. Formato "R G B" para usar alpha en Tailwind. */
 :root {
-  /* Marca (logo) */
-  --brand-navy: 33 45 61;         /* #212D3D — fondo del lockup */
-  --brand-navy-900: 22 30 41;     /* #161E29 — derivado, más profundo */
-  --brand-navy-700: 52 69 94;     /* #34455E — derivado, botones primarios (blanco 9.7:1) */
-  --brand-gold: 169 142 76;       /* #A98E4C — "KING" y corona */
-  --brand-gold-300: 201 175 110;  /* #C9AF6E — derivado: rellenos/realces sobre navy (6.2:1 con navy) */
+  /* ---- Marca (logo) ---- */
+  --brand-navy: 33 45 61; /* #212D3D — fondo del lockup */
+  --brand-navy-900: 22 30 41; /* #161E29 — profundidad, texto fuerte */
+  --brand-navy-700: 52 69 94; /* #34455E — botón primario (blanco 9.7:1) */
+  --brand-gold: 169 142 76; /* #A98E4C — «KING» y corona; decorativo, nunca texto sobre claro */
+  --brand-gold-300: 201 175 110; /* #C9AF6E — rellenos con texto navy (6.2:1), foco, pestaña activa */
+  --brand-gold-100: 245 239 223; /* #F5EFDF — tinte para placas y realces (navy encima 12:1) */
   --brand-ink-on-gold: 33 45 61;
 
-  /* Semánticos de estado (extensión justificada: el logo no define estados) */
-  --state-free: 4 120 87;         /* emerald-700 — texto blanco 5.5:1 */
-  --state-reserved: 180 83 9;     /* amber-700 — texto blanco 5.0:1 */
-  --state-occupied: 190 18 60;    /* rose-700 — texto blanco 6.4:1 */
+  /* ---- Neutros teñidos hacia el matiz navy (≈214°) ---- */
+  --surface-app: 238 241 245; /* lienzo */
+  --surface-card: 252 253 254; /* tarjetas opacas (sin blanco puro) */
+  --surface-sunken: 244 246 249; /* bloques dentro de una tarjeta */
+  --line: 218 223 231; /* bordes suaves */
+  --line-strong: 150 162 179; /* bordes de control (3:1 sobre card) */
+  --text-strong: 22 30 41; /* 16.5:1 sobre card */
+  --text-body: 45 57 74; /* 11:1 */
+  --text-muted: 71 85 105; /* 7.6:1 */
+
+  /* ---- Estados (extensión semántica: el logo no define estados) ----
+     *-solid: rellenos con texto blanco · *-tint: fondos · *-ink: texto sobre su tinte (≥ 6:1). */
+  --state-free: 4 120 87; /* #047857 — blanco 5.5:1 */
+  --state-free-tint: 231 245 239;
+  --state-free-ink: 6 95 70;
+  --state-reserved: 180 83 9; /* #B45309 — blanco 5.0:1 */
+  --state-reserved-tint: 253 242 226;
+  --state-reserved-ink: 146 64 14;
+  --state-occupied: 190 18 60; /* #BE123C — blanco 6.4:1 */
+  --state-occupied-tint: 253 235 239;
+  --state-occupied-ink: 159 18 57;
   --state-info: 52 69 94;
 
-  /* Superficies */
-  --surface-app: 241 243 246;
-  --surface-card: 255 255 255;
-  --text-strong: 22 30 41;
-  --text-muted: 71 85 105;        /* slate-600 sobre blanco 7.6:1 */
+  /* ---- Tipografía ---- */
+  --font-display: "Red Hat Display Variable", "Segoe UI", system-ui, sans-serif;
+  --font-text: "Red Hat Text Variable", "Segoe UI", system-ui, sans-serif;
 
-  /* Liquid Glass */
-  --glass-dark-bg: 33 45 61;
-  --glass-dark-alpha: 0.86;  /* sobre fondo claro: garantiza blanco ≥ 9:1 sin perder la translucidez */
-  --glass-light-alpha: 0.66;
-  --glass-blur: 18px;
-  --glass-saturate: 160%;
-  --glass-edge: 255 255 255;
-  --glass-shadow: 0 1px 0 0 rgb(255 255 255 / 0.12) inset, 0 -1px 0 0 rgb(0 0 0 / 0.18) inset,
-    0 10px 30px -12px rgb(var(--brand-navy-900) / 0.45);
-
-  /* Forma y movimiento */
+  /* ---- Forma ---- */
   --radius-sm: 0.5rem;
   --radius-md: 0.875rem;
   --radius-lg: 1.25rem;
+
+  /* ---- Elevación (sombras teñidas de navy, dos capas: ambiente + luz clave) ---- */
+  --shadow-1:
+    0 1px 2px rgb(var(--brand-navy-900) / 0.06),
+    0 1px 1px rgb(var(--brand-navy-900) / 0.04);
+  --shadow-2:
+    0 2px 4px rgb(var(--brand-navy-900) / 0.06),
+    0 8px 20px -6px rgb(var(--brand-navy-900) / 0.14);
+  --shadow-3:
+    0 4px 10px rgb(var(--brand-navy-900) / 0.08),
+    0 24px 48px -12px rgb(var(--brand-navy-900) / 0.32);
+
+  /* ---- Liquid Glass ---- */
+  --glass-dark-bg: 33 45 61;
+  --glass-dark-alpha: 0.82; /* sobre el lienzo claro: texto blanco ≥ 9:1 */
+  --glass-light-alpha: 0.62;
+  --glass-blur: 18px;
+  --glass-saturate: 165%;
+  --glass-rim:
+    inset 0 1px 0 rgb(255 255 255 / 0.22), inset 0 -1px 0 rgb(0 0 0 / 0.2);
+  --glass-rim-light:
+    inset 0 1px 0 rgb(255 255 255 / 0.85),
+    inset 0 -1px 0 rgb(var(--brand-navy) / 0.06);
+
+  /* ---- Movimiento ---- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 140ms;
   --dur-base: 240ms;
+  --dur-slow: 420ms;
+
+  /* ---- Layout ---- */
+  --dock-h: 4.25rem; /* dock inferior en móvil */
 }
