@@ -382,3 +382,28 @@ El prompt de arranque está guardado **textualmente** en [evidence/prompts/BOOTS
 | Exportador de transcript | `scripts/export_transcript_prompts.py` |
 | Contexto compacto y cápsulas | `CLAUDE.md`, `docs/agents/` |
 | Resultados de pruebas | `evidence/test-results/` |
+
+---
+
+## Etapa 7 — Evolución UI/UX: Liquid Glass + Motion (30-10-2026)
+
+**Prompt:** «VIBETHON 2026 — Auditoría y evolución completa de UI/UX», con 3 láminas del logo oficial adjuntas. Quedó registrado como turno de usuario en el export del transcript (`evidence/prompts/2026-10-30/*.transcript-export.jsonl`).
+
+**Skills:** las skills pedidas (Frontend Design, UI/UX Pro Max, Impeccable, Taste) **no estaban instaladas ni aparecían** en el catálogo de esta sesión (`SearchSkills` sin resultados). No se instalaron skills de terceros sin revisión por la falta de tiempo. Sus criterios (auditoría, tokens, refinamiento, accesibilidad) se aplicaron directamente y se documentaron en `docs/design/`.
+
+**Agentes:** motion-haiku (T6-MOTION: animaciones en `LaneView`, `CellMap` y `Toast`) y refine-haiku (T7-VIEWS: «siguiente paso» del conductor y controles de vidrio en Simulación). Ambos con `model: haiku`, effort `xhigh`, archivos exclusivos y límite de tiempo. El Lead se encargó de tokens, materiales, navegación, logo y verificación.
+
+### Ciclo real 3 — el vidrio rompía el contraste
+1. **Instrucción (Lead a sí mismo, CSS):** borde iluminado con un pseudo-elemento enmascarado (`mask-composite: exclude`).
+2. **Esperado:** un borde de 1 px con brillo, sobre una barra azul tinta translúcida.
+3. **Observado en el navegador:** la barra se veía clara y el texto blanco ilegible ([glass-bug-1366.png](../evidence/design/glass-bug-1366.png)). La máscara no recortaba y el degradado cubría toda la superficie.
+4. **Corrección:** se eliminó la máscara. Ahora el borde es translúcido, con reflejo y sombra inset (`--glass-shadow`), brillo en `background-image` y alfa 0.86 sobre fondo claro.
+5. **Nueva ejecución:** la misma captura con Playwright.
+6. **Resultado:** barra azul tinta legible, overflow horizontal de 0 px a 1440, 1366, 768 y 390 px y sin errores de consola.
+
+### Ciclo real 4 — el Toast quedó oscuro sobre oscuro
+1. **Instrucción a motion-haiku:** «añade la clase `glass-toast` conservando los colores de estado».
+2. **Esperado:** aviso legible sobre vidrio oscuro.
+3. **Observado:** el agente mantuvo `text-slate-900`, lo que dejó texto oscuro sobre vidrio oscuro ([toast-bug.png](../evidence/design/toast-bug.png)). La instrucción no decía que el vidrio fuera oscuro ni qué color de texto exigía. Fue una omisión del prompt.
+4. **Corrección (Lead):** texto blanco, iconos y borde de estado en tonos 300/400. La regla quedó escrita en `DESIGN.md` §Materiales: «`.glass-toast` = texto blanco».
+5. **Prueba posterior:** ver la verificación final abajo.

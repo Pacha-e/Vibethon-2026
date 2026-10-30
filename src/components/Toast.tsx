@@ -33,13 +33,13 @@ export function Toast() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8 }}
             transition={SPRING}
-            className={`glass-toast pointer-events-auto flex max-w-md items-start gap-3 rounded-xl border-l-4 px-4 py-3 text-slate-900 shadow-lg ${
-              isError ? 'border-red-700' : 'border-emerald-700'
+            className={`glass-toast pointer-events-auto flex max-w-md items-start gap-3 rounded-xl border-l-4 px-4 py-3 text-white shadow-lg ${
+              isError ? 'border-rose-400' : 'border-emerald-400'
             }`}
           >
             <span
               aria-hidden="true"
-              className={`text-lg font-bold leading-6 ${isError ? 'text-red-700' : 'text-emerald-700'}`}
+              className={`text-lg font-bold leading-6 ${isError ? 'text-rose-300' : 'text-emerald-300'}`}
             >
               {isError ? '✕' : '✓'}
             </span>
@@ -50,7 +50,7 @@ export function Toast() {
             <button
               type="button"
               onClick={clearFeedback}
-              className="shrink-0 rounded-md px-2 py-1 text-sm font-semibold underline underline-offset-2 hover:bg-black/5 focus-visible:outline-slate-900"
+              className="shrink-0 rounded-md px-2 py-1 text-sm font-semibold underline underline-offset-2 hover:bg-white/10 focus-visible:outline-king-gold"
             >
               Cerrar
             </button>
