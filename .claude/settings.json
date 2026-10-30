@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt_logger.py\"", "timeout": 10 }] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Agent|Task|SendMessage|TaskCreate|TaskUpdate|mcp__claude-code-remote__send_message|mcp__claude-code-remote__create_session",
+        "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt_logger.py\"", "timeout": 10 }] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Agent|Task|SendMessage|TaskCreate|TaskUpdate",
+        "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt_logger.py\"", "timeout": 10 }] }
+    ],
+    "SubagentStart": [
+      { "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt_logger.py\"", "timeout": 10 }] }
+    ],
+    "SubagentStop": [
+      { "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt_logger.py\"", "timeout": 10 }] }
+    ]
+  }
+}

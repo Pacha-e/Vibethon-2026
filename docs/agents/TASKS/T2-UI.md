@@ -1,0 +1,13 @@
+# T2-UI — Vistas Conductor, Portería, Simulación y componentes
+**Owner:** ui-haiku · **Modelo:** haiku, effort xhigh · **Deps:** tipos `src/contracts/types.ts`, store `useSim()` de `src/state/store.tsx`, selectores de `src/domain/engine` (los escribe engine-haiku en paralelo; firmas en `docs/agents/CONTRACTS.md` §Motor), `HireValetPanel` de valet-haiku.
+**Permitido:** `src/features/driver/**`, `src/features/gate/**`, `src/features/sim/**`, `src/components/**`, `src/styles/**`.
+**Prohibido:** lógica de dominio propia. Toda acción = `dispatch(Command)`. Lee `state`.
+## Entregables (export default de cada vista)
+- `src/components/`: `CellMap` (celdas por zona; cada celda con color + símbolo + texto: "○ Libre", "◐ Reservada · PLACA", "● Ocupada"/"● Ocupada (no registrado)"; prop opcional `onCellAction`), `LaneView` (fila exterior + pasarela con `capacity` huecos, portería arriba, indicar "Lleno"), `Badge`, `Toast` (muestra `useSim().feedback`, verde ok / rojo error, con texto), `EtaCard` (Eta → "Posición N · X delante · 8–14 min (estimado, no garantizado)" o "Datos insuficientes: …").
+- `src/features/driver/DriverView.tsx`: formulario "Llegar a la fila" (placa, conductor, acceso LV/RG → `arrive`); selector "Soy el conductor de" (vehículos activos); tarjeta Mi turno (acceso, placa, etapa en español, EtaCard, celda + zona + recorrido si cellId, `vehicle.notice`); botones según etapa: in_lane → "Salir sin estacionar"; entering → "Ya estacioné" (`park`), "Mi celda está ocupada" (`reportCellOccupied`); parked → "Salir del parqueadero" (`leave`); exiting → "Completar salida". Debajo `<HireValetPanel vehicleId={id} />` importado de `../valet/HireValetPanel`.
+- `src/features/gate/GateView.tsx`: dos columnas LV/RG con LaneView, contador "n/4", botón "Dar paso en portería" (`gateAdmit`) y confirmación del primero ("PLACA → celda A-03 reservada" o "Esperando celda"); lista "En camino a su celda" con "Confirmar estacionado"; `cellCounts`; CellMap con acciones de simulación (ocupada no registrada → `releaseCell`, libre → `occupyCellExternally`).
+- `src/features/sim/SimView.tsx`: importa `SCENARIOS` de `src/fixtures/scenarios.ts` (`{id,title,expected,commands}`; Lead lo escribe) → botón "Ejecutar" = `dispatch({type:'reset'})` luego `dispatch({type:'batch',commands})`; botones +1/+5 min (`advanceTime`), Reiniciar; `POLICY_TEXT`; bitácora `state.log` (últimos 40, más reciente arriba, "hh:mm").
+## Diseño
+Tailwind, tema parKING: `king-ink #0B1F3A`, `king-gold #F2B705`, `king-royal`. Contraste AA, texto ≥14px, botones con foco visible, `aria-live` en Toast. Textos en español claros.
+## Pruebas
+`npx tsc --noEmit -p .` sin errores en tus archivos. **Al terminar:** `DONE|T2-UI|archivos|tsc|riesgos` (≤5 líneas).
