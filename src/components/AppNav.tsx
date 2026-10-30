@@ -79,7 +79,7 @@ export function AppNav<T extends string>({
             className={`glass-sheen relative transition-colors duration-200 ${
               dock
                 ? `flex min-h-[3.25rem] flex-col items-center justify-center gap-0.5 rounded-tile text-[0.6875rem] font-semibold ${on ? "text-king-ink" : "text-white/80"}`
-                : `flex min-h-[2.75rem] items-center gap-2 rounded-full px-3.5 text-sm font-semibold lg:px-4 ${on ? "text-king-ink" : "text-white/80 hover:text-white"}`
+                : `flex min-h-[2.75rem] items-center gap-2 rounded-full px-3 text-sm font-semibold 2xl:px-4 ${on ? "text-king-ink" : "text-white/80 hover:text-white"}`
             }`}
           >
             {on && (

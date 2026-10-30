@@ -13,6 +13,8 @@ import { AppNav, tabId, type NavTab } from "./components/AppNav";
 import { AnimatedNumber } from "./components/ui/AnimatedNumber";
 import { Icon } from "./components/ui/Icon";
 import { EASE_OUT } from "./components/ui/motion";
+import LoginView from "./features/auth/LoginView";
+import { clearSession, loadSession, saveSession } from "./features/auth/session";
 
 type TabId = "driver" | "gate" | "valet" | "office" | "sim";
 
@@ -90,13 +92,61 @@ function SimClock() {
   );
 }
 
+/** Sesión activa: inicial del usuario + salir. El correo completo queda en el nombre accesible y el title. */
+function UserChip({ email, onLogout }: { email: string; onLogout: () => void }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-white/[0.08] py-0.5 pl-0.5 pr-1 text-sm text-white ring-1 ring-inset ring-white/10">
+      <span
+        aria-hidden="true"
+        title={email}
+        className="grid h-7 w-7 place-items-center rounded-full bg-king-gold font-display text-sm font-bold uppercase text-king-ink"
+      >
+        {email[0]}
+      </span>
+      <span className="sr-only">Sesión: {email}</span>
+      <button
+        type="button"
+        onClick={onLogout}
+        className="min-h-[2.75rem] rounded-full px-2 font-semibold text-white/85 transition-colors hover:text-white"
+      >
+        Salir
+      </button>
+    </span>
+  );
+}
+
 export default function App() {
+  const [email, setEmail] = useState<string | null>(loadSession);
+
+  return (
+    <MotionConfig reducedMotion="user">
+      {email ? (
+        <Workspace
+          email={email}
+          onLogout={() => {
+            clearSession();
+            setEmail(null);
+          }}
+        />
+      ) : (
+        <LoginView
+          onLogin={(value) => {
+            saveSession(value);
+            setEmail(value);
+          }}
+        />
+      )}
+    </MotionConfig>
+  );
+}
+
+function Workspace({ email, onLogout }: { email: string; onLogout: () => void }) {
   const [tab, setTab] = useState<TabId>("driver");
   const { state } = useSim();
   const Active = VIEWS[tab];
 
   return (
-    <MotionConfig reducedMotion="user">
+    <>
       <div className="app-backdrop min-h-screen pb-[calc(var(--dock-h)+env(safe-area-inset-bottom)+1.5rem)] md:pb-10">
         <a
           href="#vista"
@@ -107,7 +157,7 @@ export default function App() {
 
         {/* Barra superior. En móvil no es fija: la navegación vive en el dock inferior. */}
         <header className="z-30 px-2 pt-2 sm:px-4 md:sticky md:top-0">
-          <div className="glass-dark on-dark mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2.5 px-3 py-2.5 sm:px-4">
+          <div className="glass-dark on-dark mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-2.5 2xl:gap-x-4 px-3 py-2.5 sm:px-4">
             <h1 className="m-0 shrink-0 pr-1">
               <img
                 src="/brand/official/parking-logo-color.png"
@@ -133,6 +183,7 @@ export default function App() {
                 <Inventory />
               </div>
               <SimClock />
+              <UserChip email={email} onLogout={onLogout} />
             </div>
             <div className="w-full sm:hidden">
               <Inventory />
@@ -179,6 +230,6 @@ export default function App() {
 
         <Toast />
       </div>
-    </MotionConfig>
+    </>
   );
 }
